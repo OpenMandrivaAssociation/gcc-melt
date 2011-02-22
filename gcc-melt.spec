@@ -90,10 +90,10 @@
 %define alternative_priority	20%{branch_tag}
 %define cross_prefix		%{nil}
 %define cross_program_prefix	%{nil}
-%define package_suffix		%{branch}
+%define package_suffix		-%{branch}
 %define program_prefix		%{nil}
-%define program_suffix		%{branch}
-%define program_long_suffix	%{branch}
+%define program_suffix		-%{branch}
+%define program_long_suffix	-%{branch}
 %endif
 %endif
 %define _alternativesdir	/etc/alternatives
