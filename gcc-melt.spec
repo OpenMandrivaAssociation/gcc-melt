@@ -52,7 +52,7 @@
 
 # System compiler in MDV 2009
 #%if %{mdkversion} >= 200900
-#%define system_compiler		1
+#define system_compiler		1
 #%else
 %define system_compiler		0
 #%endif
