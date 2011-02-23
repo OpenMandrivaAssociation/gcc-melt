@@ -501,7 +501,7 @@ Conflicts:	gcc%{branch} < %{version}-%{release}
 Requires:	manbo-files-gcc%{program_suffix} = %{version}
 %endif
 %if %{build_pdf_doc}
-BuildRequires:	tetex, tetex-dvips, tetex-latex
+BuildRequires:	texlive, texlive-texmf-dvips, texlive-texmf-latex
 %endif
 %if %{build_check}
 BuildRequires:	dejagnu
