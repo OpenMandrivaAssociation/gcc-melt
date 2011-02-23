@@ -223,7 +223,7 @@
 #define build_libgcj_bc		1
 %endif
 %define use_hash_style_gnu	0
-%define build_cloog		1
+%define build_cloog		0
 
 # Define C library to use
 %define libc glibc
@@ -465,10 +465,12 @@ BuildRequires:	gcc4.2-c++
 # Ada requires Ada to build
 BuildRequires:	%{name}-gnat >= 3.1, %{libgnat_name} >= 3.1
 %endif
+# PPL itself is required for MELT
+BuildRequires: ppl-devel >= 0.10
 # cloog is used for Graphite support (optimizations)
 # see http://gcc.gnu.org/wiki/Graphite
 %if %{build_cloog}
-BuildRequires: ppl-devel >= 0.11, cloog-ppl-devel >= 0.15
+BuildRequires: cloog-ppl-devel >= 0.15
 #Requires: libcloog1 >= 0.15
 %endif
 #needed for lto support
