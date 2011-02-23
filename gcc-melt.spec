@@ -381,7 +381,7 @@ Source8:	build_cross_gcc4.sh
 # LSB compliant headers (for cross compiling without (glibc?) headers)
 Patch999: lsb-headers-3.1.1-misc.patch
 Patch1000: lsb-headers-3.1.1-mips-support.patch
-Patch1001: gcc-46-ppl-0.10.patch
+Patch100: gcc-46-ppl-0.10.patch
 # slibdir is either /lib or /lib64
 Patch101: gcc33-pass-slibdir.patch
 # pass libdir around
@@ -1239,6 +1239,8 @@ documentation in PDF.
 %patch2 -p1 -b .pr9929-testcase
 
 # Mandriva patches
+# Using PPL 0.10 instead of PPL 0.11
+%patch100 -F 2 -p0 -b .ppl0.10
 %patch101 -p1 -b .pass-slibdir
 %patch102 -p1 -b .pr7434-testcase
 %patch103 -p1 -b .pr8213-testcase
@@ -1337,9 +1339,6 @@ perl -pi -e '/^\#define VERSUFFIX/ and s/""/" (%{version}-%{release})"/' gcc/ver
 sed -i -e 's,\$(jardir)/ext,$(jardir)-ext,g' libjava/Makefile.{am,in}
 
 #%patch304 -p1 -b .uclibc~
-
-# Using PPL 0.10 instead of PPL 0.11
-%patch1001
 
 %build
 # FIXME: extra tools needed
