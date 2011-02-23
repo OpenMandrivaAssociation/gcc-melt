@@ -1499,12 +1499,14 @@ touch ../gcc/c-gperf.h
 mkdir -p %{target_cpu}-linux/libgcc
 ln -sf $PWD/../sysroot/usr/include %{target_cpu}-linux/libgcc/include
 
-%make
+# GCC MELT can't stand make -j for now ...
+make
 %else
 # bootstrap-lean is similar to bootstrap except "object files from the stage1
 # and stage2 of the 3-stage bootstrap of the compiler are deleted as soon as
 # they are no longer needed."
-%make bootstrap-lean BOOT_CFLAGS="$OPT_FLAGS"
+# GCC MELT can't stand make -j for now ...
+make bootstrap-lean BOOT_CFLAGS="$OPT_FLAGS"
 
 %endif
 
