@@ -223,7 +223,7 @@
 #define build_libgcj_bc		1
 %endif
 %define use_hash_style_gnu	0
-%define build_cloog		0
+%define build_cloog		1
 
 # Define C library to use
 %define libc glibc
@@ -381,6 +381,7 @@ Source8:	build_cross_gcc4.sh
 # LSB compliant headers (for cross compiling without (glibc?) headers)
 Patch999: lsb-headers-3.1.1-misc.patch
 Patch1000: lsb-headers-3.1.1-mips-support.patch
+Patch1001: gcc-46-ppl-0.10.patch
 # slibdir is either /lib or /lib64
 Patch101: gcc33-pass-slibdir.patch
 # pass libdir around
@@ -1336,6 +1337,9 @@ perl -pi -e '/^\#define VERSUFFIX/ and s/""/" (%{version}-%{release})"/' gcc/ver
 sed -i -e 's,\$(jardir)/ext,$(jardir)-ext,g' libjava/Makefile.{am,in}
 
 #%patch304 -p1 -b .uclibc~
+
+# Using PPL 0.10 instead of PPL 0.11
+%patch1001
 
 %build
 # FIXME: extra tools needed
