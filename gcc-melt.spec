@@ -470,7 +470,7 @@ BuildRequires: ppl-devel >= 0.10
 # cloog is used for Graphite support (optimizations)
 # see http://gcc.gnu.org/wiki/Graphite
 %if %{build_cloog}
-BuildRequires: cloog-ppl-devel >= 0.16
+BuildRequires: cloog-ppl-devel >= 0.15
 #Requires: libcloog1 >= 0.15
 %endif
 #needed for lto support
@@ -1439,7 +1439,7 @@ LIBGOMP_FLAGS="--disable-libgomp"
 # isl (cloog)
 # ppl-legacy (default)
 %if %{build_cloog}
-CLOOG_FLAGS="--with-ppl --with-cloog --enable-cloog-backend=ppl"
+CLOOG_FLAGS="--with-ppl --with-cloog --enable-cloog-backend=ppl-legacy"
 %endif
 %if !%{build_libffi} && !%{build_java}
 LIBFFI_FLAGS="--disable-libffi"
