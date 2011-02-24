@@ -223,7 +223,7 @@
 #define build_libgcj_bc		1
 %endif
 %define use_hash_style_gnu	0
-%define build_cloog		0
+%define build_cloog		1
 
 # Define C library to use
 %define libc glibc
@@ -470,7 +470,7 @@ BuildRequires: ppl-devel >= 0.10
 # cloog is used for Graphite support (optimizations)
 # see http://gcc.gnu.org/wiki/Graphite
 %if %{build_cloog}
-BuildRequires: cloog-ppl-devel >= 0.15
+BuildRequires: cloog-ppl-devel >= 0.16
 #Requires: libcloog1 >= 0.15
 %endif
 #needed for lto support
@@ -1434,8 +1434,12 @@ MUDFLAP_FLAGS="--disable-libmudflap"
 %if !%{build_libgomp}
 LIBGOMP_FLAGS="--disable-libgomp"
 %endif
+# As of GCC 4.6.0, we need to specify the ClooG backend, being either:
+# ppl (cloog-parma)
+# isl (cloog)
+# ppl-legacy (default)
 %if %{build_cloog}
-CLOOG_FLAGS="--with-ppl --with-cloog"
+CLOOG_FLAGS="--with-ppl --with-cloog --enable-cloog-backend=ppl"
 %endif
 %if !%{build_libffi} && !%{build_java}
 LIBFFI_FLAGS="--disable-libffi"
