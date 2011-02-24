@@ -178,7 +178,7 @@
 %define build_minimal		0
 %define build_monolithic	0
 %define build_doc		1
-%define build_pdf_doc		1
+%define build_pdf_doc		0
 %define build_check		0
 %define build_ada		0
 %define gpc_snapshot		20040516
