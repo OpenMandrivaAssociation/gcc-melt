@@ -1515,7 +1515,9 @@ make
 # and stage2 of the 3-stage bootstrap of the compiler are deleted as soon as
 # they are no longer needed."
 # GCC MELT can't stand make -j for now ...
-make bootstrap-lean BOOT_CFLAGS="$OPT_FLAGS"
+# Disabling bootstrap for now ...
+# make bootstrap-lean BOOT_CFLAGS="$OPT_FLAGS"
+make
 
 %endif
 
