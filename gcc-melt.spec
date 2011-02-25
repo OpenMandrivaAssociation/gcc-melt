@@ -189,7 +189,7 @@
 %if %isarch %{ix86} x86_64 ia64
 %define build_ada		1
 %endif
-%define build_cxx		1
+%define build_cxx		0
 %define build_libstdcxx		%{build_cxx}
 %define build_fortran		1
 %define build_objc		1
