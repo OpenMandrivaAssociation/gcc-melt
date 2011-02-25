@@ -134,7 +134,7 @@
 %define target_slibdir32	%{target_prefix}/lib
 %else
 %define arch			%(echo %{_target_cpu}|sed -e "s/\\(i.86\\|athlon\\)/i386/" -e "s/amd64/x86_64/" -e "s/\\(sun4.*\\|sparcv[89]\\)/sparc/")
-%define gcc_target_platform	%{_target_platform}-%{branch}
+%define gcc_target_platform	%{_target_platform}
 %define target_prefix		%{_prefix}
 %define target_libdir		%{_libdir}
 %define target_slibdir		/%{_lib}
