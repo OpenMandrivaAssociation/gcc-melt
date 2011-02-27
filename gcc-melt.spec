@@ -2328,7 +2328,6 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc%{_package_suffix}.info
 %{_bindir}/%{program_prefix}gcc%{program_long_suffix}
 %{_bindir}/%{gcc_target_platform}-gcc%{program_suffix}
 %{_bindir}/%{gcc_target_platform}-gcc-%{version}
-%{_bindir}/%{program_prefix}gccbug%{program_suffix}
 %if "%{name}" == "gcc%{package_suffix}"
 %{_bindir}/gcov%{program_suffix}
 %endif
