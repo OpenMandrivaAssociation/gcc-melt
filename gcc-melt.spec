@@ -7,7 +7,7 @@
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 # NOTE! Dont forget to update manbo-files-gcc at the same time, or you will break the BS.
 %define version			4.6.0
-%define snapshot		e1d3ce3
+%define snapshot		31aecee
 %define release			%{manbo_mkrel 2}
 %define nof_arches		noarch
 %define spu_arches		ppc64
@@ -134,7 +134,7 @@
 %define target_slibdir32	%{target_prefix}/lib
 %else
 %define arch			%(echo %{_target_cpu}|sed -e "s/\\(i.86\\|athlon\\)/i386/" -e "s/amd64/x86_64/" -e "s/\\(sun4.*\\|sparcv[89]\\)/sparc/")
-%define gcc_target_platform	%{_target_platform}%{package_suffix}
+%define gcc_target_platform	%{_target_platform}
 %define target_prefix		%{_prefix}
 %define target_libdir		%{_libdir}
 %define target_slibdir		/%{_lib}
