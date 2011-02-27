@@ -2824,7 +2824,9 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc%{_package_suffix}.info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/nof/libgfortran.so
 %endif
 %endif
+%if %{build_libgomp}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/finclude/omp*
+%endif
 %endif
 
 %if %{build_fortran} && %{libc_shared}
