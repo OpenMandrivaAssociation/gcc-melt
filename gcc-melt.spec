@@ -3122,11 +3122,11 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %if %{build_check}
 %doc test_summary.log
 %endif
-%{_infodir}/cppinternals%{_package_suffix}.info*
-%{_infodir}/cpp%{_package_suffix}.info*
-%{_infodir}/gcc%{_package_suffix}.info*
-%{_infodir}/gccinstall%{_package_suffix}.info*
-%{_infodir}/gccint%{_package_suffix}.info*
+%{_infodir}/cppinternals.info*
+%{_infodir}/cpp.info*
+%{_infodir}/gcc.info*
+%{_infodir}/gccinstall.info*
+%{_infodir}/gccint.info*
 %if %{build_libstdcxx}
 %doc rpm.doc/libstdc++/
 %endif
@@ -3134,22 +3134,22 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %doc rpm.doc/c++
 %endif
 %if %{build_libgomp}
-%{_infodir}/libgomp%{_package_suffix}.info*
+%{_infodir}/libgomp.info*
 %endif
 %if %{build_ada}
-%{_infodir}/gnat-style%{_package_suffix}.info*
-%{_infodir}/gnat_rm%{_package_suffix}.info*
-%{_infodir}/gnat_ugn%{_package_suffix}.info*
+%{_infodir}/gnat-style.info*
+%{_infodir}/gnat_rm.info*
+%{_infodir}/gnat_ugn.info*
 %endif
 %if %{build_java}
-%{_infodir}/gcj%{_package_suffix}.info*
+%{_infodir}/gcj.info*
 %endif
 %if %{build_pascal}
-%{_infodir}/gpc%{_package_suffix}.info*
-%{_infodir}/gpcs%{_package_suffix}.info*
+%{_infodir}/gpc.info*
+%{_infodir}/gpcs.info*
 %endif
 %if %{build_fortran}
-%{_infodir}/gfortran%{_package_suffix}.info*
+%{_infodir}/gfortran.info*
 %endif
 %endif
 
