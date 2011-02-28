@@ -3125,8 +3125,10 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{_infodir}/cppinternals.info*
 %{_infodir}/cpp.info*
 %{_infodir}/gcc.info*
+%if %{system_compiler}
 %{_infodir}/gccinstall.info*
 %{_infodir}/gccint.info*
+%endif
 %if %{build_libstdcxx}
 %doc rpm.doc/libstdc++/
 %endif
