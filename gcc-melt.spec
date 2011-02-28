@@ -100,7 +100,7 @@
 %if "%{package_suffix}" == "%{nil}"
 %define _package_suffix		%{nil}
 %else
-%define _package_suffix		-%{package_suffix}
+%define _package_suffix		%{package_suffix}
 %endif
 %define gcc42_as_system_compiler 0
 %if %{mdkversion} == 200800
@@ -2278,41 +2278,41 @@ fi
 %endif
 
 %post doc
-%_install_info gcc%{_package_suffix}.info
-%_install_info cpp%{_package_suffix}.info
+%_install_info gcc.info
+%_install_info cpp.info
 %if %{build_pascal}
-%_install_info gpc%{_package_suffix}.info
-%_install_info gpcs%{_package_suffix}.info
+%_install_info gpc.info
+%_install_info gpcs.info
 %endif
 %if %{build_fortran}
-%_install_info gfortran%{_package_suffix}.info
+%_install_info gfortran.info
 %endif
 %if %{build_ada}
-%_install_info gnat-style%{_package_suffix}.info
-%_install_info gnat_rm%{_package_suffix}.info
-%_install_info gnat_ugn%{_package_suffix}.info
+%_install_info gnat-style.info
+%_install_info gnat_rm.info
+%_install_info gnat_ugn.info
 %endif
 %if %{build_java}
-%_install_info gcj%{_package_suffix}_ug.info
+%_install_info gcj_ug.info
 %endif
 
 %preun doc
-if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc%{_package_suffix}.info.bz2 --dir=%{_infodir}/dir --remove;fi;
-%_remove_install_info cpp%{_package_suffix}.info
+if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_infodir}/dir --remove;fi;
+%_remove_install_info cpp.info
 %if %{build_pascal}
-%_remove_install_info gpc%{_package_suffix}.info
-%_remove_install_info gpcs%{_package_suffix}.info
+%_remove_install_info gpc.info
+%_remove_install_info gpcs.info
 %endif
 %if %{build_fortran}
-%_remove_install_info gfortran%{_package_suffix}.info
+%_remove_install_info gfortran.info
 %endif
 %if %{build_ada}
-%_remove_install_info gnat-style%{_package_suffix}.info
-%_remove_install_info gnat_rm%{_package_suffix}.info
-%_remove_install_info gnat_ugn%{_package_suffix}.info
+%_remove_install_info gnat-style.info
+%_remove_install_info gnat_rm.info
+%_remove_install_info gnat_ugn.info
 %endif
 %if %{build_java}
-%_remove_install_info gcj%{_package_suffix}.info
+%_remove_install_info gcj.info
 %endif
 
 %files -f %{name}.lang
