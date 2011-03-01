@@ -8,7 +8,7 @@
 # NOTE! Dont forget to update manbo-files-gcc at the same time, or you will break the BS.
 %define version			4.6.0
 %define snapshot		31aecee
-%define release			%{manbo_mkrel 2}
+%define release			%{manbo_mkrel 3}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
