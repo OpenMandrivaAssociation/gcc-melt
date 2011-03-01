@@ -8,7 +8,7 @@
 # NOTE! Dont forget to update manbo-files-gcc at the same time, or you will break the BS.
 %define version			4.6.0
 %define snapshot		31aecee
-%define release			%{manbo_mkrel 3}
+%define release			%{manbo_mkrel 3.1}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -3279,11 +3279,11 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/att.h
 %if %isarch %{biarches}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/biarch64.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/linux64.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/x86-64.h
 %endif
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/i386.h
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/linux64.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/unix.h
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/x86-64.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/linux-android.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/linux.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/vxworks-dummy.h
