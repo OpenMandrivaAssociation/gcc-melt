@@ -3277,7 +3277,9 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/glibc-stdint.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/gnu-user.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/att.h
+%if %isarch %{biarches}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/biarch64.h
+%endif
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/i386.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/linux64.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/config/i386/unix.h
