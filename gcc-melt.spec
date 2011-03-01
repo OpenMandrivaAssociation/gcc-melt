@@ -2884,10 +2884,14 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 #
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/quadmath.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/quadmath_weak.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/libquadmath.a
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/libquadmath.so
 %{_infodir}/libquadmath.info.*
 %{target_libdir}/libquadmath.so.%{libquadmath_major}
 %{target_libdir}/libquadmath.so.%{libquadmath_major}.0.0
 %if %isarch %{biarches}
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/32/libquadmath.a
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/32/libquadmath.so
 %{_prefix}/lib/libquadmath.so.%{libquadmath_major}
 %{_prefix}/lib/libquadmath.so.%{libquadmath_major}.0.0
 %endif
