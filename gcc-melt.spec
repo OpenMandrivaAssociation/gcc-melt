@@ -27,6 +27,8 @@
 %define libssp_major		0
 %define libgomp_major		1
 %define libgcj_bc_major		1
+%define liblto_major		0
+%define libquadmath_major	0
 
 # Disable -Werror because there's a format string warning in gcc/cp/parser.c 
 # around line 2300 that a comment says is intentional :( 
@@ -224,6 +226,7 @@
 %endif
 %define use_hash_style_gnu	0
 %define build_cloog		1
+%define build_lto		1
 
 # Define C library to use
 %define libc glibc
@@ -337,6 +340,8 @@
 %define libstdcxx_name		%{libstdcxx_name_orig}%{libstdcxx_major}
 %define libgfortran_name_orig	%{cross_prefix}libgfortran
 %define libgfortran_name	%{libgfortran_name_orig}%{libgfortran_major}
+%define libquadmath_name_orig	%{cross_prefix}libquadmath
+%define libquadmath_name	%{libquadmath_name_orig}%{libquadmath_major}
 %define libgcj_name_orig	%{cross_prefix}libgcj
 %define libgcj_name		%{cross_prefix}%{mklibname gcj %{libgcj_major}}
 %define libgcj_devel_name	%{cross_prefix}%{mklibname gcj -d}
@@ -474,8 +479,10 @@ BuildRequires: cloog-ppl-devel >= 0.15
 #Requires: libcloog1 >= 0.15
 %endif
 #needed for lto support
+%if %{build_lto}
 BuildRequires: elfutils-devel
 Requires:	%{name}-cpp = %{version}-%{release}
+%endif
 # FIXME: We need a libgcc with 3.4 symbols
 %if %{libc_shared} && !%{build_monolithic}
 Requires:	%{libgcc_name_orig} >= 3.3.2-5mdk
@@ -796,6 +803,22 @@ AutoProv:	false
 %description -n %{libgfortran_name}
 This package contains Fortran 95 shared library which is needed to run
 Fortran 95 dynamically linked programs.
+
+%package -n %{libquadmath_name}
+Summary:	GCC Quad-Precision Math Library
+Group:		System/Libraries
+Provides:	%{libquadmath_name_orig} = %{version}
+Obsoletes:	%{libquadmath_name_orig}%{branch}
+Provides:	%{libquadmath_name_orig}%{branch} = %{version}-%{release}
+%if %{build_cross}
+AutoReq:	false
+AutoProv:	false
+%endif
+
+%description -n %{libquadmath_name}
+A library, which provides quad-precision mathematical functions on
+targets supporting the __float128 datatype. The library is used to
+provide on such targets the REAL(16) type in the GNU Fortran compiler. 
 
 ####################################################################
 # Ada 95 Compiler
@@ -1400,6 +1423,9 @@ LANGUAGES="$LANGUAGES,java"
 %if %{build_pascal}
 LANGUAGES="$LANGUAGES,pascal"
 %endif
+%if %{build_lto}
+LANGUAGES="$LANGUAGES,lto"
+%endif
 PROGRAM_SUFFIX=""
 %if "%{program_suffix}" != ""
 PROGRAM_SUFFIX="--program-suffix=%{program_suffix}"
@@ -1496,7 +1522,7 @@ CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFL
 	../configure --prefix=%{_prefix} --libexecdir=%{_prefix}/lib --with-slibdir=%{target_slibdir} \
 	--with-bugurl=https://qa.mandriva.com/ \
 	--mandir=%{_mandir} --infodir=%{_infodir} $CHECKING_FLAGS \
-	--enable-languages="$LANGUAGES,lto" $PROGRAM_PREFIX $PROGRAM_SUFFIX \
+	--enable-languages="$LANGUAGES" $PROGRAM_PREFIX $PROGRAM_SUFFIX \
 	--build=%{_target_platform} --host=%{_target_platform} $CROSS_FLAGS $TARGET_FLAGS \
 	--with-system-zlib $LIBC_FLAGS $LIBOBJC_FLAGS $LIBSTDCXX_FLAGS $LIBJAVA_FLAGS $SSP_FLAGS \
 	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS \
@@ -1824,6 +1850,7 @@ pushd $FULLPATH
 	%endif
 	%if %{build_fortran}
 	DispatchLibs libgfortran	%{libgfortran_major}.0.0
+	DispatchLibs libquadmath	%{libquadmath_major}.0.0
 	[[ -f ../../../libgfortranbegin.a ]] &&
 	mv -f ../../../libgfortranbegin.a 32/libgfortranbegin.a || :
 	%if %isarch %{nof_arches}
@@ -2363,8 +2390,14 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %endif
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcc.a
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcov.a
+%if %{build_lto}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/lto-wrapper
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/lto1
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.la
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so.%{liblto_major}
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so.%{liblto_major}.0.0
+%endif
 
 %if !%{build_cross_bootstrap}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcc_eh.a
@@ -2418,6 +2451,8 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/lwpintrin.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/popcntintrin.h
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/xopintrin.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/include/bmiintrin.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/include/tbmintrin.h
 %endif
 %if %isarch ppc ppc64
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/include/spe.h
@@ -2837,9 +2872,24 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 #
 %{target_libdir}/libgfortran.so.%{libgfortran_major}
 %{target_libdir}/libgfortran.so.%{libgfortran_major}.0.0
+%{target_libdir}/libgfortran.spec
 %if %isarch %{biarches}
 %{_prefix}/lib/libgfortran.so.%{libgfortran_major}
 %{_prefix}/lib/libgfortran.so.%{libgfortran_major}.0.0
+%{_prefix}/lib/libgfortran.spec
+%endif
+
+%files -n %{libquadmath_name}
+%defattr(-,root,root)
+#
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/include/quadmath.h
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/include/quadmath_weak.h
+%{_infodir}/libquadmath.info.*
+%{target_libdir}/libquadmath.so.%{libquadmath_major}
+%{target_libdir}/libquadmath.so.%{libquadmath_major}.0.0
+%if %isarch %{biarches}
+%{_prefix}/lib/libquadmath.so.%{libquadmath_major}
+%{_prefix}/lib/libquadmath.so.%{libquadmath_major}.0.0
 %endif
 %endif
 
