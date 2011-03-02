@@ -1262,13 +1262,26 @@ documentation in PDF.
 # GCC MELT packaging
 
 %if "%{branch}" == "melt"
-%package -n meltplugin
+%package -n gcc-melt-plugin
 Summary:	GCC MELT Plugin
 Group:		Development/Other
 Requires:	gcc%{branch}
 
-%description -n meltplugin
+%description -n gcc-melt-plugin
+GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
+languages -C, C++, Ada, Fortran, ...- and systems) plugin and branch,
+providing a lispy domain specific language to easily code GCC extensions
+in. MELT originally meant Middle End Lisp Translator
 
+GCC MELT should interest any important software project (coded in C,
+C++, Ada, Fortran, ...), compiled with GCC, since it facilitates the
+development of customized GCC extensions for:
+ - specific warnings or typechecks
+ - specific optimizations coding rules
+ - validation source code navigation or processing, in particular aspect
+   oriented programming, retro-engineering or refactoring tasks
+ - any processing taking advantage of powerful GCC internal
+   representations of your source code
 %endif
 
 %prep
@@ -3246,7 +3259,7 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 ####################################################################
 # GCC MELT packaging
 %if "%{branch}" == "melt"
-%files -n meltplugin
+%files -n gcc-melt-plugin
 %defattr(-,root,root)
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module.mk
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/melt-default-modules.modlis
