@@ -1513,6 +1513,12 @@ CHECKING_FLAGS="--enable-checking=release"
 CHECKING_FLAGS="--enable-checking=yes"
 %endif
 
+%if %{build_fortran}
+LIBQUADMATH_FLAGS=""
+%else
+LIBQUADMATH_FLAGS="--disable-libquadmath"
+%endif
+
 # (anssi) building with external jar fails
 %define python_dir %(echo "%{py_puresitedir}" | sed 's!^%{_prefix}!!g')
 export JAR="no"
@@ -1524,7 +1530,7 @@ CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFL
 	--enable-languages="$LANGUAGES" $PROGRAM_PREFIX $PROGRAM_SUFFIX \
 	--build=%{_target_platform} --host=%{_target_platform} $CROSS_FLAGS $TARGET_FLAGS \
 	--with-system-zlib $LIBC_FLAGS $LIBOBJC_FLAGS $LIBSTDCXX_FLAGS $LIBJAVA_FLAGS $SSP_FLAGS \
-	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS \
+	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS $LIBQUADMATH_FLAGS \
 	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins --disable-bootstrap
 touch ../gcc/c-gperf.h
 %if %{build_cross}
