@@ -1,14 +1,11 @@
-%define _vendor Manbo
-%define _host_vendor manbo
-%define _real_vendor manbo
+%define _real_vendor mandriva
 
 %define name			%{cross_prefix}gcc%{package_suffix}
 %define branch			melt
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
-# NOTE! Dont forget to update manbo-files-gcc at the same time, or you will break the BS.
 %define version			4.6.0
 %define snapshot		31aecee
-%define release			%{manbo_mkrel 3.3}
+%define release			%{mkrel 4}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -507,9 +504,6 @@ Provides:	gcc%{branch} = %{version}-%{release}
 %else
 Conflicts:	gcc%{branch} < %{version}-%{release}
 %endif
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc%{program_suffix} = %{version}
-%endif
 %if %{build_pdf_doc}
 BuildRequires:	texlive, texlive-texmf-dvips, texlive-texmf-latex
 %endif
@@ -560,9 +554,6 @@ Provides:	gcc%{branch}-c++ = %{version}-%{release}
 Conflicts:	gcc%{branch}-c++ < %{version}-%{release}
 %endif
 Requires:	%{name} = %{version}-%{release}
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc-c++%{program_suffix} = %{version}
-%endif
 %if %{system_compiler}
 # some day, rpm will be smart enough: %if (%{system_compiler} || %{build_cross}) && !%{build_monolithic}
 %if %{libc_shared}
@@ -629,9 +620,6 @@ project to implement the ISO/IEC 14882:1998 Standard C++ library.
 %package -n %{libstdcxx_name_orig}-devel
 Summary:	Header files and libraries for C++ development
 Group:		Development/C++
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc%{program_suffix} = %{version}
-%endif
 %if %{libc_shared}
 Requires:	%{libstdcxx_name} = %{version}-%{release}
 %endif
@@ -768,9 +756,6 @@ Group:		Development/Other
 Obsoletes:	gcc%{branch}-gfortran
 Provides:	gcc%{branch}-gfortran = %{version}-%{release}
 %endif
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc-gfortran%{program_suffix} = %{version}
-%endif
 Obsoletes:	gcc%{branch}-g77
 Requires:	%{name} = %{version}-%{release}
 %if %{libc_shared} && !%{build_monolithic}
@@ -869,9 +854,6 @@ Group:		Development/Java
 Obsoletes:	gcc%{branch}-java
 Provides:	gcc%{branch}-java = %{version}-%{release}
 %endif
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc-java%{program_suffix} = %{version}
-%endif
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{GCJ_TOOLS} = %{version}-%{release}
 Requires:	%{libgcj_name} >= %{version}
@@ -893,9 +875,6 @@ Group:		Development/Java
 Obsoletes:	%{cross_prefix}gcj%{branch}-tools
 Provides:	%{cross_prefix}gcj%{branch}-tools = %{version}-%{release}
 Requires:	%{libgcj_bc_name} >= %{version}
-%endif
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc-java%{program_suffix} = %{version}
 %endif
 Provides:	%{cross_prefix}gcj-tools = %{version}-%{release}
 Requires:	%{libgcj_name} >= %{version}
@@ -975,9 +954,6 @@ Requires:	zlib-devel
 Requires:	%{libgcj_name} = %{version}-%{release}
 Provides:	%{libgcj_name_orig}%{branch}-devel = %{version}-%{release}
 Provides:	%{libgcj_name_orig}-devel = %{version}-%{release}
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc%{program_suffix} = %{version}
-%endif
 %if %{system_compiler}
 Requires:	%{libgcj_bc_name} >= %{version}-%{release}
 Obsoletes:	libgcj3-devel
@@ -1062,9 +1038,6 @@ for FFI support.
 %package -n %{libffi_name}-devel
 Summary:	Development headers and static library for FFI
 Group:		Development/C
-%if "%{_real_vendor}" == "manbo"
-Requires:	manbo-files-gcc%{program_suffix} = %{version}
-%endif
 Requires:	%{libffi_name} = %{version}-%{release}
 Provides:	%{libffi_name_orig}-devel = %{version}-%{release}
 Obsoletes:	%{libffi_name_orig}-devel = 4.3.2
