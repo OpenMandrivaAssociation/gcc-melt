@@ -3293,6 +3293,7 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj.melt
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-predef.melt
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base.c
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base+01.c
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base.melt
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-simple+01.c
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-simple.c
