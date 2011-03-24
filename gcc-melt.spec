@@ -4,8 +4,8 @@
 %define branch			melt
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.6.0
-%define snapshot		f3fe262
-%define release			%{mkrel 4.1}
+%define snapshot		1849458
+%define release			%{mkrel 4.2}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
