@@ -5,7 +5,7 @@
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.6.0
 %define snapshot		1849458
-%define release			%{mkrel 4.2}
+%define release			%{mkrel 4.3}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -30,6 +30,10 @@
 # Disable -Werror because there's a format string warning in gcc/cp/parser.c 
 # around line 2300 that a comment says is intentional :( 
 %define Werror_cflags %nil
+
+%if %{branch}
+%define _target_platform	%{_target_cpu}-%{_real_vendor}%{branch}-%{_target_os}%{?_gnu}
+%endif
 
 # Package holding Java tools (gij, jv-convert, etc.)
 %define GCJ_TOOLS		%{cross_prefix}gcj%{package_suffix}-tools
@@ -328,6 +332,13 @@
 %endif
 %if !%{build_java}
 %define build_libffi		0
+%endif
+
+%if "%{branch}" == "melt"
+%define libc_shared		0
+%define build_doc		0
+%define build_flto		0
+%define biarches		noarch
 %endif
 
 # Define library packages names
@@ -1238,7 +1249,6 @@ documentation in PDF.
 %package -n gcc-melt-plugin
 Summary:	GCC MELT Plugin
 Group:		Development/Other
-Requires:	gcc%{branch}
 
 %description -n gcc-melt-plugin
 GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
@@ -1507,10 +1517,18 @@ sparc|sparcv9)	TARGET_FLAGS="--with-long-double-128";;
 mips64|mips64el) TARGET_FLAGS="--enable-long-long --with-abi=64";;
 esac
 
+%if "%{branch}" == "melt"
+MELT_FLAGS="--disable-multilib"
+%endif
+
 %if %{build_release}
 CHECKING_FLAGS="--enable-checking=release"
 %else
 CHECKING_FLAGS="--enable-checking=yes"
+%endif
+
+%if %{build_flto}
+OPT_FLAGS="$OPT_FLAGS -flto"
 %endif
 
 %if %{build_fortran}
@@ -1531,7 +1549,8 @@ CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFL
 	--build=%{_target_platform} --host=%{_target_platform} $CROSS_FLAGS $TARGET_FLAGS \
 	--with-system-zlib $LIBC_FLAGS $LIBOBJC_FLAGS $LIBSTDCXX_FLAGS $LIBJAVA_FLAGS $SSP_FLAGS \
 	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS $LIBQUADMATH_FLAGS \
-	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins --disable-bootstrap
+	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins --disable-bootstrap \
+	$MELT_FLAGS
 touch ../gcc/c-gperf.h
 %if %{build_cross}
 # (peryvind): xgcc seems to ignore --sysroot, so let's just workaround it for
@@ -2154,6 +2173,10 @@ rm -rf %{buildroot}%{_datadir}/locale
 %endif
 rm -f %{buildroot}%{_infodir}/cp-tools.info
 
+%if "%{branch}" == "melt"
+rm -rf %{buildroot}%{_datadir}/locale
+%endif
+
 # In case we are cross-compiling, don't bother to remake symlinks and
 # don't let spec-helper when stripping files either
 %if %build_cross
@@ -2208,8 +2231,8 @@ mv -f %{buildroot}%{_prefix}/lib/libstdc++.so.%{libstdcxx_major}.0.%{libstdcxx_m
 rm -rf %{buildroot}/%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/
 %endif
 
-%clean
-rm -rf %{buildroot}
+# %clean
+# rm -rf %{buildroot}
 
 %post
 /usr/sbin/update-alternatives --install %{_bindir}/%{cross_program_prefix}gcc %{cross_program_prefix}gcc %{_bindir}/%{program_prefix}gcc-%{version} %{alternative_priority}
@@ -2410,9 +2433,9 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so.%{liblto_major}.0.0
 %endif
 
-%if !%{build_cross_bootstrap}
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcc_eh.a
-%endif
+#%if !%{build_cross_bootstrap}
+#%{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcc_eh.a
+#%endif
 %if "%{name}" == "gcc%{package_suffix}"
 %if %isarch %{biarches}
 %dir %{gcc_libdir}/%{gcc_target_platform}/%{version}/32
@@ -2631,8 +2654,8 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 #
 %if %{build_cross} && !%{build_cross_bootstrap}|| %{system_compiler}
 /lib/%{cross_program_prefix}cpp
-%endif
 %ghost %{_bindir}/%{cross_program_prefix}cpp
+%endif
 %{_bindir}/%{program_prefix}cpp%{program_long_suffix}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/cc1
 
