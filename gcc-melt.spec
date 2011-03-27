@@ -2174,6 +2174,7 @@ rm -rf %{buildroot}%{_datadir}/locale
 rm -f %{buildroot}%{_infodir}/cp-tools.info
 
 %if "%{branch}" == "melt"
+rm -f %{buildroot}%{_bindir}/cpp
 rm -rf %{buildroot}%{_datadir}/locale
 %endif
 
