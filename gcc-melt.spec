@@ -1,11 +1,13 @@
 %define _real_vendor mandriva
 
+# To prepare tarball,
+# git archive --format=tar melt-branch | bzip2 > gcc-melt-$(git describe --always).tar.bz2
 %define name			%{cross_prefix}gcc%{package_suffix}
 %define branch			melt
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.6.0
-%define snapshot		1849458
-%define release			%{mkrel 4.3}
+%define snapshot		4515dca
+%define release			%{mkrel 4.4}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -1541,6 +1543,8 @@ LIBQUADMATH_FLAGS="--disable-libquadmath"
 %define python_dir %(echo "%{py_puresitedir}" | sed 's!^%{_prefix}!!g')
 export JAR="no"
 export FASTJAR="no"
+# OPT_FLAGS=`echo %{optflags} | sed -e 's/\(-Wp,\)\?-D_FORTIFY_SOURCE=[12]//g'`
+# OPT_FLAGS=`echo "$OPT_FLAGS" | sed -e 's/[[:blank:]]\+/ /g'`
 CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../configure --prefix=%{_prefix} --libexecdir=%{_prefix}/lib --with-slibdir=%{target_slibdir} \
 	--with-bugurl=https://qa.mandriva.com/ \
@@ -1566,8 +1570,10 @@ make
 # they are no longer needed."
 # GCC MELT can't stand make -j for now ...
 # Disabling bootstrap for now ...
-# make bootstrap-lean BOOT_CFLAGS="$OPT_FLAGS"
 make
+# BOOT_CFLAGS=`echo %{optflags} | sed -e 's/\(-Wp,\)\?-D_FORTIFY_SOURCE=[12]//g'`
+# BOOT_CFLAGS=`echo "$BOOT_CFLAGS" | sed -e 's/[[:blank:]]\+/ /g'`
+# make bootstrap-lean BOOT_CFLAGS="$BOOT_CFLAGS"
 
 %endif
 
