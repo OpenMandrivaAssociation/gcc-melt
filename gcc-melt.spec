@@ -1580,7 +1580,7 @@ make
 # they are no longer needed."
 # GCC MELT can't stand make -j for now ...
 # Disabling bootstrap for now ...
-%if %melt_boostrap
+%if %melt_bootstrap
 make bootstrap-lean BOOT_CFLAGS="$OPT_CFLAGS"
 %endif
 
