@@ -342,8 +342,6 @@
 %define build_flto		0
 %define biarches		noarch
 %define melt_bootstrap		0
-%define use_pkgversion		1
-%define pkgversion		"Mandriva/MELT %{version}-%{branch}-%{release}-%{snapshot}"
 %endif
 
 # Define library packages names
@@ -1524,15 +1522,12 @@ esac
 
 %if "%{branch}" == "melt"
 MELT_FLAGS="--disable-multilib"
-	%if %use_pkgversion
-		MELT_PKGVERSION="--with-pkgversion=%{pkgversion}"
-	%endif
 	%if %melt_bootstrap
 		MELT_BOOTSTRAP_FLAGS="--enable-bootstrap"
 	%else
 		MELT_BOOTSTRAP_FLAGS="--disable-bootstrap"
 	%endif
-MELT_FLAGS="$MELT_FLAGS $MELT_PKGVERSION $MELT_BOOTSTRAP_FLAGS"
+MELT_FLAGS="$MELT_FLAGS $MELT_BOOTSTRAP_FLAGS"
 %endif
 
 %if %{build_release}
