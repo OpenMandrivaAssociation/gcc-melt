@@ -7,7 +7,7 @@
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.7.0
 %define snapshot		4515dca
-%define release			%{mkrel 4.4.1}
+%define release			%{mkrel 5}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -341,7 +341,7 @@
 %define build_doc		0
 %define build_flto		0
 %define biarches		noarch
-%define melt_bootstrap		0
+%define melt_bootstrap		1
 %endif
 
 # Define library packages names
@@ -482,11 +482,11 @@ BuildRequires:	gcc4.2-c++
 BuildRequires:	%{name}-gnat >= 3.1, %{libgnat_name} >= 3.1
 %endif
 # PPL itself is required for MELT
-BuildRequires: ppl-devel >= 0.10
+BuildRequires: ppl-devel >= 0.11
 # cloog is used for Graphite support (optimizations)
 # see http://gcc.gnu.org/wiki/Graphite
 %if %{build_cloog}
-BuildRequires: cloog-ppl-devel >= 0.15
+BuildRequires: cloog-ppl-devel >= 0.16
 #Requires: libcloog1 >= 0.15
 %endif
 #needed for lto support
@@ -1277,7 +1277,7 @@ development of customized GCC extensions for:
 
 # Mandriva patches
 # Using PPL 0.10 instead of PPL 0.11
-%patch100 -F 2 -p0 -b .ppl0.10
+# %patch100 -F 2 -p0 -b .ppl0.10
 %patch101 -p1 -b .pass-slibdir
 %patch102 -p1 -b .pr7434-testcase
 %patch103 -p1 -b .pr8213-testcase
@@ -1477,7 +1477,7 @@ LIBGOMP_FLAGS="--disable-libgomp"
 # isl (cloog)
 # ppl-legacy (default)
 %if %{build_cloog}
-CLOOG_FLAGS="--with-ppl --with-cloog --enable-cloog-backend=ppl-legacy"
+CLOOG_FLAGS="--with-ppl --with-cloog --enable-cloog-backend=ppl"
 %endif
 %if !%{build_libffi} && !%{build_java}
 LIBFFI_FLAGS="--disable-libffi"
