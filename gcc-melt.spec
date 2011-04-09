@@ -342,6 +342,8 @@
 %define build_flto		0
 %define biarches		noarch
 %define melt_bootstrap		0
+%define use_pkgversion		1
+%define pkgversion		"Mandriva/MELT %{version}-%{branch}-%{release}-%{snapshot}"
 %endif
 
 # Define library packages names
@@ -1522,11 +1524,15 @@ esac
 
 %if "%{branch}" == "melt"
 MELT_FLAGS="--disable-multilib"
+	%if %use_pkgversion
+		MELT_PKGVERSION="--with-pkgversion=%{pkgversion}"
+	%endif
 	%if %melt_bootstrap
 		MELT_BOOTSTRAP_FLAGS="--enable-bootstrap"
 	%else
 		MELT_BOOTSTRAP_FLAGS="--disable-bootstrap"
 	%endif
+MELT_FLAGS="$MELT_FLAGS $MELT_PKGVERSION $MELT_BOOTSTRAP_FLAGS"
 %endif
 
 %if %{build_release}
@@ -1557,7 +1563,7 @@ CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFL
 	--build=%{_target_platform} --host=%{_target_platform} $CROSS_FLAGS $TARGET_FLAGS \
 	--with-system-zlib $LIBC_FLAGS $LIBOBJC_FLAGS $LIBSTDCXX_FLAGS $LIBJAVA_FLAGS $SSP_FLAGS \
 	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS $LIBQUADMATH_FLAGS \
-	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins $MELT_BOOTSTRAP_FLAGS \
+	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins \
 	$MELT_FLAGS
 touch ../gcc/c-gperf.h
 %if %{build_cross}
