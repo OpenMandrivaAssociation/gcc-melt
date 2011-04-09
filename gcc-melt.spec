@@ -1,7 +1,7 @@
 %define _real_vendor mandriva
 
 # To prepare tarball,
-# git archive --format=tar melt-branch | bzip2 > gcc-melt-$(git describe --always).tar.bz2
+# git archive --prefix=gcc-melt-$(git describe --always)/ --format=tar melt-branch | bzip2 > gcc-melt-$(git describe --always).tar.bz2
 %define name			%{cross_prefix}gcc%{package_suffix}
 %define branch			melt
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
@@ -341,6 +341,7 @@
 %define build_doc		0
 %define build_flto		0
 %define biarches		noarch
+%define melt_bootstrap		0
 %endif
 
 # Define library packages names
@@ -1521,6 +1522,11 @@ esac
 
 %if "%{branch}" == "melt"
 MELT_FLAGS="--disable-multilib"
+	%if %melt_bootstrap
+		MELT_BOOTSTRAP_FLAGS="--enable-bootstrap"
+	%else
+		MELT_BOOTSTRAP_FLAGS="--disable-bootstrap"
+	%endif
 %endif
 
 %if %{build_release}
@@ -1543,8 +1549,6 @@ LIBQUADMATH_FLAGS="--disable-libquadmath"
 %define python_dir %(echo "%{py_puresitedir}" | sed 's!^%{_prefix}!!g')
 export JAR="no"
 export FASTJAR="no"
-# OPT_FLAGS=`echo %{optflags} | sed -e 's/\(-Wp,\)\?-D_FORTIFY_SOURCE=[12]//g'`
-# OPT_FLAGS=`echo "$OPT_FLAGS" | sed -e 's/[[:blank:]]\+/ /g'`
 CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../configure --prefix=%{_prefix} --libexecdir=%{_prefix}/lib --with-slibdir=%{target_slibdir} \
 	--with-bugurl=https://qa.mandriva.com/ \
@@ -1553,7 +1557,7 @@ CC="%{__cc}" CFLAGS="$OPT_FLAGS" CXXFLAGS="$OPT_FLAGS" XCFLAGS="$OPT_FLAGS" TCFL
 	--build=%{_target_platform} --host=%{_target_platform} $CROSS_FLAGS $TARGET_FLAGS \
 	--with-system-zlib $LIBC_FLAGS $LIBOBJC_FLAGS $LIBSTDCXX_FLAGS $LIBJAVA_FLAGS $SSP_FLAGS \
 	$MUDFLAP_FLAGS $LIBFFI_FLAGS --disable-werror $LIBGOMP_FLAGS $LIBQUADMATH_FLAGS \
-	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins --disable-bootstrap \
+	$CLOOG_FLAGS --with-python-dir=%{python_dir} --enable-plugins $MELT_BOOTSTRAP_FLAGS \
 	$MELT_FLAGS
 touch ../gcc/c-gperf.h
 %if %{build_cross}
@@ -1570,10 +1574,9 @@ make
 # they are no longer needed."
 # GCC MELT can't stand make -j for now ...
 # Disabling bootstrap for now ...
-make
-# BOOT_CFLAGS=`echo %{optflags} | sed -e 's/\(-Wp,\)\?-D_FORTIFY_SOURCE=[12]//g'`
-# BOOT_CFLAGS=`echo "$BOOT_CFLAGS" | sed -e 's/[[:blank:]]\+/ /g'`
-# make bootstrap-lean BOOT_CFLAGS="$BOOT_CFLAGS"
+%if %melt_boostrap
+make bootstrap-lean BOOT_CFLAGS="$OPT_CFLAGS"
+%endif
 
 %endif
 
