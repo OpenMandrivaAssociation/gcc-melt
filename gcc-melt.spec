@@ -7,7 +7,7 @@
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.7.0
 %define snapshot		4515dca
-%define release			%{mkrel 1}
+%define release			%{mkrel 2}
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -531,6 +531,10 @@ AutoProv:	false
 BuildRequires:	libgmp-devel
 BuildRequires:	libmpfr-devel
 BuildRequires:	libmpc-devel
+%if "%{branch}" == "melt"
+Requires:	gcc-melt-module = %{version}-%{release}
+Requires:	gcc-melt-source = %{version}-%{release}
+%endif
 
 %description
 A compiler aimed at integrating all the optimizations and features
@@ -601,11 +605,11 @@ library and C++ header files; the library for dynamically linking
 programs is available separately.
 
 ####################################################################
-# gcc Plugins
-%package -n gcc-plugins
-Summary:	Headers to build gcc plugins
+# gcc Plugin%package -n gcc-plugins
+%package plugins
 Group:		Development/C
-%description -n gcc-plugins
+Obsoletes:	gcc-plugins <= 4.7.0-2
+%description plugins
 This package contains the headers needed to build gcc plugins.
 
 ####################################################################
@@ -1249,11 +1253,35 @@ documentation in PDF.
 # GCC MELT packaging
 
 %if "%{branch}" == "melt"
-%package -n gcc-melt-plugin
-Summary:	GCC MELT Plugin
+%package -n gcc-melt-module
+Summary:	GCC MELT Module
 Group:		Development/Other
+Obsoletes:	gcc-melt-plugin <= 4.7.0-4.4.1
+Provides:	gcc-melt-module = %{version}-%{release}
 
-%description -n gcc-melt-plugin
+%description -n gcc-melt-module
+GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
+languages -C, C++, Ada, Fortran, ...- and systems) plugin and branch,
+providing a lispy domain specific language to easily code GCC extensions
+in. MELT originally meant Middle End Lisp Translator
+
+GCC MELT should interest any important software project (coded in C,
+C++, Ada, Fortran, ...), compiled with GCC, since it facilitates the
+development of customized GCC extensions for:
+ - specific warnings or typechecks
+ - specific optimizations coding rules
+ - validation source code navigation or processing, in particular aspect
+   oriented programming, retro-engineering or refactoring tasks
+ - any processing taking advantage of powerful GCC internal
+   representations of your source code
+
+%package -n gcc-melt-source
+Summary:	GCC MELT Module sources
+Group:		Development/Other
+Obsoletes:	gcc-melt-plugin <= 4.7.0-4.4.1
+Provides:	gcc-melt-source = %{version}-%{release}
+
+%description -n gcc-melt-source
 GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
 languages -C, C++, Ada, Fortran, ...- and systems) plugin and branch,
 providing a lispy domain specific language to easily code GCC extensions
@@ -2702,7 +2730,7 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %endif
 %endif
 
-%files -n gcc-plugins
+%files plugins
 %dir %{gcc_libdir}/%{gcc_target_platform}/%{version}/plugin/include/
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/plugin/include/*
 
@@ -3272,7 +3300,7 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 ####################################################################
 # GCC MELT packaging
 %if "%{branch}" == "melt"
-%files -n gcc-melt-plugin
+%files -n gcc-melt-module
 %defattr(-,root,root)
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module.mk
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/melt-default-modules.modlis
@@ -3289,6 +3317,9 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-c-generator.so
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-opengpu.so
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-parse-infix-syntax.so
+
+%files -n gcc-melt-source
+%defattr(-,root,root)
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-base.c
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-base.melt
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-debug+01.c
