@@ -607,6 +607,7 @@ programs is available separately.
 ####################################################################
 # gcc Plugin%package -n gcc-plugins
 %package plugins
+Summary:	Headers to build gcc plugins
 Group:		Development/C
 Obsoletes:	gcc-plugins <= 4.7.0-2
 %description plugins
