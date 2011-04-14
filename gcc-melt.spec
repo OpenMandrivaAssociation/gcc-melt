@@ -2265,10 +2265,6 @@ mv -f %{buildroot}%{_prefix}/lib/libstdc++.so.%{libstdcxx_major}.0.%{libstdcxx_m
 %endif
 
 ####################################################################
-# GCC MELT packaging
-%if "%{branch}" == "melt"
-rm -rf %{buildroot}/%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/
-%endif
 
 # %clean
 # rm -rf %{buildroot}
@@ -3303,72 +3299,10 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %files -n gcc-melt-module
 %defattr(-,root,root)
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module.mk
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/melt-default-modules.modlis
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-base.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-debug.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-first.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-genobj.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-macro.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-normal.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-normatch.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/warmelt-outobj.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-ana-base.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-ana-simple.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-c-generator.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-opengpu.so
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/xtramelt-parse-infix-syntax.so
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/*
 
 %files -n gcc-melt-source
 %defattr(-,root,root)
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-base.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-base.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-debug+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-debug.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-debug.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-first+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-first+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-first.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-first.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj+03.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj+04.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-genobj.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-macro+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-macro+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-macro+03.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-macro.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-macro.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normal+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normal+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normal+03.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normal.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normal.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normatch+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normatch+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normatch+03.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normatch.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-normatch.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj+03.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj+04.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-outobj.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/warmelt-predef.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-base.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-simple+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-simple.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-ana-simple.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-c-generator+01.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-c-generator+02.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-c-generator.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-c-generator.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-opengpu.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-opengpu.melt
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-parse-infix-syntax.c
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/xtramelt-parse-infix-syntax.melt
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-source/*
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/*
 %endif
