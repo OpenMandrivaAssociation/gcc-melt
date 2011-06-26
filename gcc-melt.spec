@@ -3300,7 +3300,7 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %files -n gcc-melt-module
 %defattr(-,root,root)
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module.mk
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-module/*
+%{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-modules/*
 
 %files -n gcc-melt-source
 %defattr(-,root,root)
