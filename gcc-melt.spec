@@ -440,7 +440,7 @@ Patch202: gcc4-ppc64-m32-m64-multilib-only.patch
 Patch207: gcc4-libltdl-multilib.patch
 
 # workaround bug with redefined extern inline (mdvbz #41171, upstream #33763)
-#Patch208: gcc43-pr33763.patch
+Patch208: gcc43-pr33763.patch
 
 # use hash style gnu (faster dynamic linking, cf http://lwn.net/Articles/192624/)
 Patch211: gcc43-hash-style-gnu.patch
@@ -1335,7 +1335,7 @@ perl -pi -e 's,\@ADDITIONAL_RPATH\@,,' libjava/Makefile.{am,in}
 %patch201 -p1 -b .java-nomulti
 %patch202 -p1 -b .ppc64-m32-m64-multilib-only
 %patch207 -p1 -b .libltdl-multilib
-%patch208 -p1 -b .pr33763
+#patch208 -p1 -b .pr33763
 %if %{use_hash_style_gnu}
 #%patch211 -p1 -b .hash-style-gnu
 %endif
