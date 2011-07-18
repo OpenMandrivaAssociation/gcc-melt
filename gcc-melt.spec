@@ -533,7 +533,7 @@ BuildRequires:	libmpfr-devel
 BuildRequires:	libmpc-devel
 %if "%{branch}" == "melt"
 Requires:	gcc-melt-module = %{version}-%{release}
-# Requires:	gcc-melt-source = %{version}-%{release}
+Requires:	gcc-melt-source = %{version}-%{release}
 Provides:	gccmelt
 %endif
 
@@ -1277,27 +1277,27 @@ development of customized GCC extensions for:
  - any processing taking advantage of powerful GCC internal
    representations of your source code
 
-##%package -n gcc-melt-source
-##Summary:	GCC MELT Module sources
-##Group:		Development/Other
-##Obsoletes:	gcc-melt-plugin <= 4.7.0-4.4.1
-##Provides:	gcc-melt-source = %{version}-%{release}
-##
-##%description -n gcc-melt-source
-##GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
-##languages -C, C++, Ada, Fortran, ...- and systems) plugin and branch,
-##providing a lispy domain specific language to easily code GCC extensions
-##in. MELT originally meant Middle End Lisp Translator
-##
-##GCC MELT should interest any important software project (coded in C,
-##C++, Ada, Fortran, ...), compiled with GCC, since it facilitates the
-##development of customized GCC extensions for:
-## - specific warnings or typechecks
-## - specific optimizations coding rules
-## - validation source code navigation or processing, in particular aspect
-##   oriented programming, retro-engineering or refactoring tasks
-## - any processing taking advantage of powerful GCC internal
-##   representations of your source code
+%package -n gcc-melt-source
+Summary:	GCC MELT Module sources
+Group:		Development/Other
+Obsoletes:	gcc-melt-plugin <= 4.7.0-4.4.1
+Provides:	gcc-melt-source = %{version}-%{release}
+
+%description -n gcc-melt-source
+GCC MELT is a GCC (Gnu Compiler Collection, a free compiler for many
+languages -C, C++, Ada, Fortran, ...- and systems) plugin and branch,
+providing a lispy domain specific language to easily code GCC extensions
+in. MELT originally meant Middle End Lisp Translator
+
+GCC MELT should interest any important software project (coded in C,
+C++, Ada, Fortran, ...), compiled with GCC, since it facilitates the
+development of customized GCC extensions for:
+ - specific warnings or typechecks
+ - specific optimizations coding rules
+ - validation source code navigation or processing, in particular aspect
+   oriented programming, retro-engineering or refactoring tasks
+ - any processing taking advantage of powerful GCC internal
+   representations of your source code
 %endif
 
 %prep
