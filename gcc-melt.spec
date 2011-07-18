@@ -199,7 +199,7 @@
 %define build_fortran		%{system_compiler}
 %define build_objc		1
 %define build_objcp		1
-%define build_libmudflap	1
+%define build_libmudflap	0
 %define build_libgomp           1
 %define build_libgcj_bc		0
 %define build_libffi		1
