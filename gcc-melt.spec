@@ -6,7 +6,7 @@
 %define branch			melt
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.7.0
-%define snapshot		e87fbe2
+%define snapshot		3cefe7f
 %define release			6
 %define nof_arches		noarch
 %define spu_arches		ppc64
@@ -116,8 +116,8 @@
 %endif
 
 %if "%snapshot" != ""
-%define source_package		gcc-%{branch}-%{snapshot}
-%define source_dir		gcc-%{branch}-%{snapshot}
+%define source_package		gcc-%{branch}-%{version}-git%{snapshot}
+%define source_dir		gcc-%{branch}-%{version}-git%{snapshot}
 %define build_release		0
 %else
 %define source_package		gcc-%{version}
