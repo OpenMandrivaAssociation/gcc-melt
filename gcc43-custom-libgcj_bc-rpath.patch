@@ -1,0 +1,36 @@
+From e9630ace5abd64e92ee891a9abb0ea3f6f2ebba6 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:48 +0000
+Subject: gcc43-custom-libgcj_bc-rpath
+
+---
+ libjava/Makefile.am |    2 +-
+ libjava/Makefile.in |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: gcc-4.5.0/libjava/Makefile.am
+===================================================================
+--- gcc-4.5.0/libjava/Makefile.am
++++ gcc-4.5.0/libjava/Makefile.am	2010-06-21 15:39:14.320500232 +0000
+@@ -296,7 +296,7 @@
+ 
+ LTLDFLAGS = $(shell $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ GCJLINK = $(LIBTOOL) --tag=GCJ $(LIBTOOLFLAGS) --mode=link $(GCJ) -L$(here) \
+-	  $(JC1FLAGS) $(LTLDFLAGS) -o $@
++	  $(JC1FLAGS) $(LTLDFLAGS) -o $@ @ADDITIONAL_RPATH@
+ GCJ_FOR_ECJX = @GCJ_FOR_ECJX@
+ GCJ_FOR_ECJX_LINK = $(GCJ_FOR_ECJX) -o $@
+ LIBLINK = $(LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link $(CXX) -L$(here) \
+Index: gcc-4.5.0/libjava/Makefile.in
+===================================================================
+--- gcc-4.5.0/libjava/Makefile.in
++++ gcc-4.5.0/libjava/Makefile.in	2010-06-21 15:39:09.229562577 +0000
+@@ -1073,7 +1073,7 @@
+ GCJ_WITH_FLAGS = $(GCJ) --encoding=UTF-8 -Wno-deprecated
+ LTLDFLAGS = $(shell $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
+ GCJLINK = $(LIBTOOL) --tag=GCJ $(LIBTOOLFLAGS) --mode=link $(GCJ) -L$(here) \
+-	  $(JC1FLAGS) $(LTLDFLAGS) -o $@
++	  $(JC1FLAGS) $(LTLDFLAGS) -o $@ @ADDITIONAL_RPATH@
+ 
+ GCJ_FOR_ECJX_LINK = $(GCJ_FOR_ECJX) -o $@
+ LIBLINK = $(LIBTOOL) --tag=CXX $(LIBTOOLFLAGS) --mode=link $(CXX) -L$(here) \

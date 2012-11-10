@@ -1,0 +1,130 @@
+From a7b0b684d7f48761eac3ec5b06532f2ad5e47fbe Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Mon, 16 Feb 2009 12:20:49 +0000
+Subject: gcc35 ada link
+
+---
+ gcc/ada/gcc-interface/Makefile.in |   63 +++++++++++++++++++++++++++++++++++++
+ gcc/ada/gnat_rm.texi              |    4 ++
+ gcc/ada/gnat_ugn.texi             |    5 +++
+ gcc/ada/link.c                    |    4 +-
+ 4 files changed, 74 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/ada/gcc-interface/Makefile.in b/gcc/ada/gcc-interface/Makefile.in
+index c431118..1f0a5e0 100644
+--- a/gcc/ada/gcc-interface/Makefile.in
++++ b/gcc/ada/gcc-interface/Makefile.in
+@@ -1004,6 +1004,69 @@ ifeq ($(strip $(filter-out s390% linux%,$(arch) $(osys))),)
+   LIBRARY_VERSION := $(LIB_VERSION)
+ endif
+ 
++ifeq ($(strip $(filter-out alpha% linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  SYMLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out sparc% linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  SYMLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out ia64 linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  SYMLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out x86_64 linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  MISCLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out ppc linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  MISCLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out s390 linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  MISCLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
++ifeq ($(strip $(filter-out s390x linux%,$(arch) $(osys))),)
++  MLIB_TGT=5lml-tgt
++  MISCLIB=
++  THREADSLIB=-lpthread
++  GNATLIB_SHARED=gnatlib-shared-dual
++  GMEM_LIB=gmemlib
++  LIBRARY_VERSION := $(strip $(shell grep Library_Version $(fsrcpfx)gnatvsn.ads | sed -e 's/.*GNAT Lib v\(.*\)[ "].*/\1/'))
++endif
++
+ ifeq ($(strip $(filter-out mips sgi irix%,$(targ))),)
+   ifeq ($(strip $(filter-out mips sgi irix6%,$(targ))),)
+     LIBGNAT_TARGET_PAIRS = \
+diff --git a/gcc/ada/gnat_rm.texi b/gcc/ada/gnat_rm.texi
+index a768528..a4229f3 100644
+--- a/gcc/ada/gnat_rm.texi
++++ b/gcc/ada/gnat_rm.texi
+@@ -33,6 +33,10 @@ included in the section entitled ``GNU Free Documentation License''.
+ 
+ @setchapternewpage odd
+ @syncodeindex fn cp
++@dircategory Programming
++@direntry
++* gnat_rm: (gnat_rm).            GNAT Reference Manual
++@end direntry
+ 
+ @include gcc-common.texi
+ 
+diff --git a/gcc/ada/gnat_ugn.texi b/gcc/ada/gnat_ugn.texi
+index 76e5758..e5b598f 100644
+--- a/gcc/ada/gnat_ugn.texi
++++ b/gcc/ada/gnat_ugn.texi
+@@ -120,6 +120,11 @@ Texts.  A copy of the license is included in the section entitled
+ @syncodeindex fn cp
+ @c %**end of header
+ 
++@dircategory Programming
++@direntry
++* gnat_ug: (gnat_ug).            GNAT User's Guide
++@end direntry
++
+ @titlepage
+ @title @value{EDITION} User's Guide
+ @ifset vms
+--- gcc-4.5.0/gcc/ada/link.c
++++ gcc-4.5.0/gcc/ada/link.c	2010-08-18 14:32:29.532651313 +0000
+@@ -213,8 +213,8 @@
+ 
+ #elif defined (linux) || defined(__GLIBC__)
+ const char *__gnat_object_file_option = "";
+-const char *__gnat_run_path_option = "-Wl,-rpath,";
+-char __gnat_shared_libgnat_default = STATIC;
++const char *__gnat_run_path_option = "";
++char __gnat_shared_libgnat_default = SHARED;
+ char __gnat_shared_libgcc_default = STATIC;
+ int __gnat_link_max = 8192;
+ unsigned char __gnat_objlist_file_supported = 1;

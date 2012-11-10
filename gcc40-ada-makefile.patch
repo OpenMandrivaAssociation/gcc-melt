@@ -1,0 +1,54 @@
+From 79b40df30965ed39001850e8e949f49301c9edd9 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:49 +0000
+Subject: gcc40 ada makefile
+
+---
+ gcc/ada/gcc-interface/Makefile.in |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/gcc/ada/gcc-interface/Makefile.in b/gcc/ada/gcc-interface/Makefile.in
+index 1f0a5e0..4a8bde8 100644
+--- a/gcc/ada/gcc-interface/Makefile.in
++++ b/gcc/ada/gcc-interface/Makefile.in
+@@ -120,7 +120,7 @@ OUTPUT_OPTION = @OUTPUT_OPTION@
+ objext = .o
+ exeext =
+ arext  = .a
+-soext  = .so
++soext  = .so.1
+ shext  =
+ hyphen = -
+ 
+@@ -2141,6 +2141,10 @@ gnatlib-shared-default:
+ 		libgnat$(soext)
+ 	cd $(RTSDIR); $(LN_S) libgnarl$(hyphen)$(LIBRARY_VERSION)$(soext) \
+ 		libgnarl$(soext)
++	cd $(RTSDIR); $(LN_S) libgnat$(hyphen)$(LIBRARY_VERSION)$(soext) \
++		libgnat$(hyphen)$(LIBRARY_VERSION).so
++	cd $(RTSDIR); $(LN_S) libgnarl$(hyphen)$(LIBRARY_VERSION)$(soext) \
++		libgnarl$(hyphen)$(LIBRARY_VERSION).so
+ 
+ gnatlib-shared-dual:
+ 	$(MAKE) $(FLAGS_TO_PASS) \
+@@ -2149,7 +2153,7 @@ gnatlib-shared-dual:
+ 	     MULTISUBDIR="$(MULTISUBDIR)" \
+ 	     THREAD_KIND="$(THREAD_KIND)" \
+              gnatlib-shared-default
+-	$(MV) $(RTSDIR)/libgna*$(soext) .
++	$(MV) $(RTSDIR)/libgna*$(soext) $(RTSDIR)/libgna*.so .
+ 	$(RM) ../stamp-gnatlib2-$(RTSDIR)
+ 	$(MAKE) $(FLAGS_TO_PASS) \
+              GNATLIBFLAGS="$(GNATLIBFLAGS)" \
+@@ -2157,7 +2161,7 @@ gnatlib-shared-dual:
+ 	     MULTISUBDIR="$(MULTISUBDIR)" \
+ 	     THREAD_KIND="$(THREAD_KIND)" \
+              gnatlib
+-	$(MV) libgna*$(soext) $(RTSDIR)
++	$(MV) libgna*$(soext) libgna*.so $(RTSDIR)
+ 
+ gnatlib-shared-dual-win32:
+ 	$(MAKE) $(FLAGS_TO_PASS) \
+-- 
+1.6.2.4
+

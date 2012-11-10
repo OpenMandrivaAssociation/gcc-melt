@@ -1,0 +1,740 @@
+From 792ab7086e58565d78112db14a1fe2ff17e9d516 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 12 May 2009 09:57:16 +0000
+Subject: [PATCH 10/22] wformat fixes
+
+---
+ gcc/c-common.c                |    4 +-
+ gcc/c-convert.c               |    2 +-
+ gcc/c-typeck.c                |    6 +-
+ gcc/cfg.c                     |    2 +-
+ gcc/collect2.c                |    8 +-
+ gcc/cp/cvt.c                  |    2 +-
+ gcc/cp/parser.c               |    4 +-
+ gcc/cp/pt.c                   |    2 +-
+ gcc/cp/typeck.c               |    4 +-
+ gcc/fold-const.c              |    2 +-
+ gcc/fortran/decl.c            |    4 +-
+ gcc/fortran/dump-parse-tree.c |    1 -
+ gcc/fortran/intrinsic.c       |    8 +-
+ gcc/fortran/match.c           |    4 +-
+ gcc/fortran/matchexp.c        |   18 +-
+ gcc/fortran/module.c          |   30 +-
+ gcc/fortran/openmp.c          |    2 +-
+ gcc/fortran/primary.c         |    6 +-
+ gcc/fortran/symbol.c          |   24 +-
+ gcc/fortran/trans-decl.c      |    2 +-
+ gcc/gcc.c                     |    2 +-
+ gcc/ira-conflicts.c           |    2 +-
+ gcc/objc/objc-act.c           |    2 +-
+ gcc/opts.c                    |    2 +-
+ gcc/ra-conflict.c             | 1241 +++++++++++++++++++++++++++++++++++++++++
+ gcc/toplev.c                  |    9 +-
+ gcc/tree-switch-conversion.c  |    2 +-
+ libcpp/macro.c                |    4 +-
+ libgfortran/runtime/environ.c |    2 +-
+ 29 files changed, 1321 insertions(+), 80 deletions(-)
+ create mode 100644 gcc/ra-conflict.c
+
+diff --git a/gcc/c-common.c b/gcc/c-common.c
+index cc00511..f3eb496 100644
+--- a/gcc/c-common.c
++++ b/gcc/c-common.c
+@@ -7512,11 +7512,11 @@ c_parse_error (const char *gmsgid, enum cpp_ttype token, tree value)
+       message = NULL;
+     }
+   else
+-    error (gmsgid);
++    error ("%s", gmsgid);
+ 
+   if (message)
+     {
+-      error (message);
++      error ("%s", message);
+       free (message);
+     }
+ #undef catenate_messages
+diff --git a/gcc/c-convert.c b/gcc/c-convert.c
+index d7e2e5d..c066973 100644
+--- a/gcc/c-convert.c
++++ b/gcc/c-convert.c
+@@ -79,7 +79,7 @@ convert (tree type, tree expr)
+   if ((invalid_conv_diag
+        = targetm.invalid_conversion (TREE_TYPE (expr), type)))
+     {
+-      error (invalid_conv_diag);
++      error ("%s", invalid_conv_diag);
+       return error_mark_node;
+     }
+ 
+diff --git a/gcc/c-typeck.c b/gcc/c-typeck.c
+index 8ffecf4..c183834 100644
+--- a/gcc/c-typeck.c
++++ b/gcc/c-typeck.c
+@@ -2730,7 +2730,7 @@ convert_arguments (int nargs, tree *argarray,
+       else if ((invalid_func_diag =
+ 		targetm.calls.invalid_arg_for_unprototyped_fn (typelist, fundecl, val)))
+ 	{
+-	  error (invalid_func_diag);
++	  error ("%s", invalid_func_diag);
+ 	  return -1;
+ 	}
+       else
+@@ -2947,7 +2947,7 @@ build_unary_op (location_t location,
+   if ((invalid_op_diag
+        = targetm.invalid_unary_op (code, TREE_TYPE (xarg))))
+     {
+-      error_at (location, invalid_op_diag);
++      error_at (location, "%s", invalid_op_diag);
+       return error_mark_node;
+     }
+ 
+@@ -8099,7 +8099,7 @@ build_binary_op (location_t location, enum tree_code code,
+   if ((invalid_op_diag
+        = targetm.invalid_binary_op (code, type0, type1)))
+     {
+-      error_at (location, invalid_op_diag);
++      error_at (location, "%s", invalid_op_diag);
+       return error_mark_node;
+     }
+ 
+diff --git a/gcc/cfg.c b/gcc/cfg.c
+index 9c41930..480f5c2 100644
+--- a/gcc/cfg.c
++++ b/gcc/cfg.c
+@@ -908,7 +908,7 @@ dump_cfg_bb_info (FILE *file, basic_block bb)
+ 	else
+ 	  fprintf (file, ", ");
+ 	first = false;
+-	fprintf (file, bb_bitnames[i]);
++	fprintf (file, "%s", bb_bitnames[i]);
+       }
+   if (!first)
+     fprintf (file, ")");
+diff --git a/gcc/collect2.c b/gcc/collect2.c
+index 3f62dfe..15a7cab 100644
+--- a/gcc/collect2.c
++++ b/gcc/collect2.c
+@@ -1647,10 +1647,10 @@ collect_execute (const char *prog, char **argv, const char *outname,
+       if (err != 0)
+ 	{
+ 	  errno = err;
+-	  fatal_perror (errmsg);
++	  fatal_perror ("%s", errmsg);
+ 	}
+       else
+-	fatal (errmsg);
++	fatal ("%s", errmsg);
+     }
+ 
+   if (response_arg)
+@@ -2137,10 +2137,10 @@ scan_prog_file (const char *prog_name, enum pass which_pass)
+       if (err != 0)
+ 	{
+ 	  errno = err;
+-	  fatal_perror (errmsg);
++	  fatal_perror ("%s", errmsg);
+ 	}
+       else
+-	fatal (errmsg);
++	fatal ("%s", errmsg);
+     }
+ 
+   int_handler  = (void (*) (int)) signal (SIGINT,  SIG_IGN);
+diff --git a/gcc/cp/cvt.c b/gcc/cp/cvt.c
+index fed4ab2..a536aca 100644
+--- a/gcc/cp/cvt.c
++++ b/gcc/cp/cvt.c
+@@ -591,7 +591,7 @@ ocp_convert (tree type, tree expr, int convtype, int flags)
+   if ((invalid_conv_diag
+        = targetm.invalid_conversion (TREE_TYPE (expr), type)))
+     {
+-      error (invalid_conv_diag);
++      error ("%s", invalid_conv_diag);
+       return error_mark_node;
+     }
+ 
+diff --git a/gcc/cp/parser.c b/gcc/cp/parser.c
+index 11edd4f..47c5292 100644
+--- a/gcc/cp/parser.c
++++ b/gcc/cp/parser.c
+@@ -2207,7 +2207,7 @@ cp_parser_check_type_definition (cp_parser* parser)
+     {
+       /* Don't use `%s' to print the string, because quotations (`%<', `%>')
+ 	 in the message need to be interpreted.  */
+-      error (parser->type_definition_forbidden_message);
++      error ("%s", parser->type_definition_forbidden_message);
+       return false;
+     }
+   return true;
+diff --git a/gcc/cp/pt.c b/gcc/cp/pt.c
+index bc02194..10f5b91 100644
+--- a/gcc/cp/pt.c
++++ b/gcc/cp/pt.c
+@@ -11135,7 +11135,7 @@ tsubst_copy_and_build (tree t,
+ 				     &error_msg,
+ 				     input_location);
+ 	if (error_msg)
+-	  error (error_msg);
++	  error ("%s", error_msg);
+ 	if (!function_p && TREE_CODE (decl) == IDENTIFIER_NODE)
+ 	  decl = unqualified_name_lookup_error (decl);
+ 	return decl;
+diff --git a/gcc/cp/typeck.c b/gcc/cp/typeck.c
+index 76d6d5d..c59819a 100644
+--- a/gcc/cp/typeck.c
++++ b/gcc/cp/typeck.c
+@@ -3373,7 +3373,7 @@ cp_build_binary_op (location_t location,
+   if ((invalid_op_diag
+        = targetm.invalid_binary_op (code, type0, type1)))
+     {
+-      error (invalid_op_diag);
++      error ("%s", invalid_op_diag);
+       return error_mark_node;
+     }
+ 
+@@ -4254,7 +4254,7 @@ cp_build_unary_op (enum tree_code code, tree xarg, int noconvert,
+ 				    : code),
+ 				   TREE_TYPE (xarg))))
+     {
+-      error (invalid_op_diag);
++      error ("%s", invalid_op_diag);
+       return error_mark_node;
+     }
+ 
+diff --git a/gcc/fold-const.c b/gcc/fold-const.c
+index e38850f..f1785d5 100644
+--- a/gcc/fold-const.c
++++ b/gcc/fold-const.c
+@@ -1025,7 +1025,7 @@ fold_overflow_warning (const char* gmsgid, enum warn_strict_overflow_code wc)
+ 	}
+     }
+   else if (issue_strict_overflow_warning (wc))
+-    warning (OPT_Wstrict_overflow, gmsgid);
++    warning (OPT_Wstrict_overflow, "%s", gmsgid);
+ }
+ 
+ /* Return true if the built-in mathematical function specified by CODE
+diff --git a/gcc/fortran/intrinsic.c b/gcc/fortran/intrinsic.c
+index 481a938..d02597f 100644
+--- a/gcc/fortran/intrinsic.c
++++ b/gcc/fortran/intrinsic.c
+@@ -262,11 +262,11 @@ add_sym (const char *name, gfc_isym_id id, enum klass cl, int actual_ok, bt type
+       break;
+ 
+     case SZ_NOTHING:
+-      next_sym->name = gfc_get_string (name);
++      next_sym->name = gfc_get_string ("%s", name);
+ 
+       strcpy (buf, "_gfortran_");
+       strcat (buf, name);
+-      next_sym->lib_name = gfc_get_string (buf);
++      next_sym->lib_name = gfc_get_string ("%s", buf);
+ 
+       next_sym->elemental = (cl == CLASS_ELEMENTAL);
+       next_sym->inquiry = (cl == CLASS_INQUIRY);
+@@ -722,7 +722,7 @@ find_sym (gfc_intrinsic_sym *start, int n, const char *name)
+   /* name may be a user-supplied string, so we must first make sure
+      that we're comparing against a pointer into the global string
+      table.  */
+-  const char *p = gfc_get_string (name);
++  const char *p = gfc_get_string ("%s", name);
+ 
+   while (n > 0)
+     {
+@@ -918,7 +918,7 @@ make_alias (const char *name, int standard)
+ 
+     case SZ_NOTHING:
+       next_sym[0] = next_sym[-1];
+-      next_sym->name = gfc_get_string (name);
++      next_sym->name = gfc_get_string ("%s", name);
+       next_sym->standard = standard;
+       next_sym++;
+       break;
+diff --git a/gcc/fortran/matchexp.c b/gcc/fortran/matchexp.c
+index f757365..dacad69 100644
+--- a/gcc/fortran/matchexp.c
++++ b/gcc/fortran/matchexp.c
+@@ -193,7 +193,7 @@ match_primary (gfc_expr **result)
+   return MATCH_YES;
+ 
+ syntax:
+-  gfc_error (expression_syntax);
++  gfc_error ("%s", expression_syntax);
+   return MATCH_ERROR;
+ }
+ 
+@@ -496,7 +496,7 @@ match_level_2 (gfc_expr **result)
+       m = match_ext_add_operand (&e);
+       if (m == MATCH_NO)
+ 	{
+-	  gfc_error (expression_syntax);
++	  gfc_error ("%s", expression_syntax);
+ 	  m = MATCH_ERROR;
+ 	}
+     }
+@@ -535,7 +535,7 @@ match_level_2 (gfc_expr **result)
+ 
+       m = match_ext_add_operand (&e);
+       if (m == MATCH_NO)
+-	gfc_error (expression_syntax);
++	gfc_error ("%s", expression_syntax);
+       if (m != MATCH_YES)
+ 	{
+ 	  gfc_free_expr (all);
+@@ -586,7 +586,7 @@ match_level_3 (gfc_expr **result)
+       m = match_level_2 (&e);
+       if (m == MATCH_NO)
+ 	{
+-	  gfc_error (expression_syntax);
++	  gfc_error ("%s", expression_syntax);
+ 	  gfc_free_expr (all);
+ 	}
+       if (m != MATCH_YES)
+@@ -646,7 +646,7 @@ match_level_4 (gfc_expr **result)
+ 
+   m = match_level_3 (&right);
+   if (m == MATCH_NO)
+-    gfc_error (expression_syntax);
++    gfc_error ("%s", expression_syntax);
+   if (m != MATCH_YES)
+     {
+       gfc_free_expr (left);
+@@ -755,7 +755,7 @@ match_or_operand (gfc_expr **result)
+ 
+       m = match_and_operand (&e);
+       if (m == MATCH_NO)
+-	gfc_error (expression_syntax);
++	gfc_error ("%s", expression_syntax);
+       if (m != MATCH_YES)
+ 	{
+ 	  gfc_free_expr (all);
+@@ -798,7 +798,7 @@ match_equiv_operand (gfc_expr **result)
+ 
+       m = match_or_operand (&e);
+       if (m == MATCH_NO)
+-	gfc_error (expression_syntax);
++	gfc_error ("%s", expression_syntax);
+       if (m != MATCH_YES)
+ 	{
+ 	  gfc_free_expr (all);
+@@ -852,7 +852,7 @@ match_level_5 (gfc_expr **result)
+ 
+       m = match_equiv_operand (&e);
+       if (m == MATCH_NO)
+-	gfc_error (expression_syntax);
++	gfc_error ("%s", expression_syntax);
+       if (m != MATCH_YES)
+ 	{
+ 	  gfc_free_expr (all);
+@@ -911,7 +911,7 @@ gfc_match_expr (gfc_expr **result)
+ 
+       m = match_level_5 (&e);
+       if (m == MATCH_NO)
+-	gfc_error (expression_syntax);
++	gfc_error ("%s", expression_syntax);
+       if (m != MATCH_YES)
+ 	{
+ 	  gfc_free_expr (all);
+diff --git a/gcc/fortran/module.c b/gcc/fortran/module.c
+index d5a9f54..28e34fd 100644
+--- a/gcc/fortran/module.c
++++ b/gcc/fortran/module.c
+@@ -805,9 +805,9 @@ find_true_name (const char *name, const char *module)
+   gfc_symbol sym;
+   int c;
+ 
+-  sym.name = gfc_get_string (name);
++  sym.name = gfc_get_string ("%s", name);
+   if (module != NULL)
+-    sym.module = gfc_get_string (module);
++    sym.module = gfc_get_string ("%s", module);
+   else
+     sym.module = NULL;
+   t.sym = &sym;
+@@ -1612,7 +1612,7 @@ mio_pool_string (const char **stringp)
+   else
+     {
+       require_atom (ATOM_STRING);
+-      *stringp = atom_string[0] == '\0' ? NULL : gfc_get_string (atom_string);
++      *stringp = atom_string[0] == '\0' ? NULL : gfc_get_string ("%s", atom_string);
+       gfc_free (atom_string);
+     }
+ }
+@@ -2460,7 +2460,7 @@ mio_symtree_ref (gfc_symtree **stp)
+ 	    {
+ 	      p->u.rsym.sym = gfc_new_symbol (p->u.rsym.true_name,
+ 					      gfc_current_ns);
+-	      p->u.rsym.sym->module = gfc_get_string (p->u.rsym.module);
++	      p->u.rsym.sym->module = gfc_get_string ("%s", p->u.rsym.module);
+ 	    }
+ 
+ 	  p->u.rsym.symtree->n.sym = p->u.rsym.sym;
+@@ -2967,7 +2967,7 @@ mio_expr (gfc_expr **ep)
+       else
+ 	{
+ 	  require_atom (ATOM_STRING);
+-	  e->value.function.name = gfc_get_string (atom_string);
++	  e->value.function.name = gfc_get_string ("%s", atom_string);
+ 	  gfc_free (atom_string);
+ 
+ 	  mio_integer (&flag);
+@@ -3695,8 +3695,8 @@ load_generic_interfaces (void)
+ 	      if (!sym)
+ 		{
+ 		  gfc_get_symbol (p, NULL, &sym);
+-		  sym->name = gfc_get_string (name);
+-		  sym->module = gfc_get_string (module_name);
++		  sym->name = gfc_get_string ("%s", name);
++		  sym->module = gfc_get_string ("%s", module_name);
+ 		  sym->attr.flavor = FL_PROCEDURE;
+ 		  sym->attr.generic = 1;
+ 		  sym->attr.use_assoc = 1;
+@@ -3901,7 +3901,7 @@ load_needed (pointer_info *p)
+ 				 1, &ns->proc_name);
+ 
+       sym = gfc_new_symbol (p->u.rsym.true_name, ns);
+-      sym->module = gfc_get_string (p->u.rsym.module);
++      sym->module = gfc_get_string ("%s", p->u.rsym.module);
+       strcpy (sym->binding_label, p->u.rsym.binding_label);
+ 
+       associate_integer_pointer (p, sym);
+@@ -4162,7 +4162,7 @@ read_module (void)
+ 		  info->u.rsym.sym = gfc_new_symbol (info->u.rsym.true_name,
+ 						     gfc_current_ns);
+ 		  sym = info->u.rsym.sym;
+-		  sym->module = gfc_get_string (info->u.rsym.module);
++		  sym->module = gfc_get_string ("%s", info->u.rsym.module);
+ 
+ 		  /* TODO: hmm, can we test this?  Do we know it will be
+ 		     initialized to zeros?  */
+@@ -4521,7 +4521,7 @@ write_symbol0 (gfc_symtree *st)
+ 
+   sym = st->n.sym;
+   if (sym->module == NULL)
+-    sym->module = gfc_get_string (module_name);
++    sym->module = gfc_get_string ("%s", module_name);
+ 
+   if (sym->attr.flavor == FL_PROCEDURE && sym->attr.generic
+       && !sym->attr.subroutine && !sym->attr.function)
+@@ -4614,7 +4614,7 @@ write_generic (gfc_symtree *st)
+     return;
+ 
+   if (sym->module == NULL)
+-    sym->module = gfc_get_string (module_name);
++    sym->module = gfc_get_string ("%s", module_name);
+ 
+   mio_symbol_interface (&st->name, &sym->module, &sym->generic);
+ }
+@@ -4962,7 +4962,7 @@ import_iso_c_binding_module (void)
+ 
+       mod_sym->attr.flavor = FL_MODULE;
+       mod_sym->attr.intrinsic = 1;
+-      mod_sym->module = gfc_get_string (iso_c_module_name);
++      mod_sym->module = gfc_get_string ("%s", iso_c_module_name);
+       mod_sym->from_intmod = INTMOD_ISO_C_BINDING;
+     }
+ 
+@@ -5039,7 +5039,7 @@ create_int_parameter (const char *name, int value, const char *modname,
+   gfc_get_sym_tree (name, gfc_current_ns, &tmp_symtree);
+   sym = tmp_symtree->n.sym;
+ 
+-  sym->module = gfc_get_string (modname);
++  sym->module = gfc_get_string ("%s", modname);
+   sym->attr.flavor = FL_PARAMETER;
+   sym->ts.type = BT_INTEGER;
+   sym->ts.kind = gfc_default_integer_kind;
+@@ -5083,7 +5083,7 @@ use_iso_fortran_env_module (void)
+ 
+       mod_sym->attr.flavor = FL_MODULE;
+       mod_sym->attr.intrinsic = 1;
+-      mod_sym->module = gfc_get_string (mod);
++      mod_sym->module = gfc_get_string ("%s", mod);
+       mod_sym->from_intmod = INTMOD_ISO_FORTRAN_ENV;
+     }
+   else
+@@ -5279,7 +5279,7 @@ gfc_use_module (void)
+   fclose (module_fp);
+ 
+   use_stmt = gfc_get_use_list ();
+-  use_stmt->module_name = gfc_get_string (module_name);
++  use_stmt->module_name = gfc_get_string ("%s", module_name);
+   use_stmt->only_flag = only_flag;
+   use_stmt->rename = gfc_rename_list;
+   use_stmt->where = use_locus;
+diff --git a/gcc/fortran/primary.c b/gcc/fortran/primary.c
+index cb6f988..a6b0184 100644
+--- a/gcc/fortran/primary.c
++++ b/gcc/fortran/primary.c
+@@ -1486,7 +1486,7 @@ match_keyword_arg (gfc_actual_arglist *actual, gfc_actual_arglist *base)
+ 	  }
+     }
+ 
+-  actual->name = gfc_get_string (name);
++  actual->name = gfc_get_string ("%s", name);
+   return MATCH_YES;
+ 
+ cleanup:
+diff --git a/gcc/fortran/symbol.c b/gcc/fortran/symbol.c
+index ca9d0a3..59ff7c6 100644
+--- a/gcc/fortran/symbol.c
++++ b/gcc/fortran/symbol.c
+@@ -1759,7 +1759,7 @@ gfc_add_component (gfc_symbol *sym, const char *name,
+   else
+     tail->next = p;
+ 
+-  p->name = gfc_get_string (name);
++  p->name = gfc_get_string ("%s", name);
+   p->loc = gfc_current_locus;
+ 
+   *component = p;
+@@ -2251,7 +2251,7 @@ gfc_new_symtree (gfc_symtree **root, const char *name)
+   gfc_symtree *st;
+ 
+   st = XCNEW (gfc_symtree);
+-  st->name = gfc_get_string (name);
++  st->name = gfc_get_string ("%s", name);
+   st->typebound = NULL;
+ 
+   gfc_insert_bbt (root, st, compare_symtree);
+@@ -2268,7 +2268,7 @@ gfc_delete_symtree (gfc_symtree **root, const char *name)
+ 
+   st0 = gfc_find_symtree (*root, name);
+ 
+-  st.name = gfc_get_string (name);
++  st.name = gfc_get_string ("%s", name);
+   gfc_delete_bbt (root, &st, compare_symtree);
+ 
+   gfc_free (st0);
+@@ -2327,7 +2327,7 @@ gfc_get_uop (const char *name)
+   st = gfc_new_symtree (&gfc_current_ns->uop_root, name);
+ 
+   uop = st->n.uop = XCNEW (gfc_user_op);
+-  uop->name = gfc_get_string (name);
++  uop->name = gfc_get_string ("%s", name);
+   uop->access = ACCESS_UNKNOWN;
+   uop->ns = gfc_current_ns;
+ 
+@@ -2399,7 +2399,7 @@ gfc_new_symbol (const char *name, gfc_namespace *ns)
+   if (strlen (name) > GFC_MAX_SYMBOL_LEN)
+     gfc_internal_error ("new_symbol(): Symbol name too long");
+ 
+-  p->name = gfc_get_string (name);
++  p->name = gfc_get_string ("%s", name);
+ 
+   /* Make sure flags for symbol being C bound are clear initially.  */
+   p->attr.is_bind_c = 0;
+@@ -3280,7 +3280,7 @@ gfc_get_gsymbol (const char *name)
+ 
+   s = XCNEW (gfc_gsymbol);
+   s->type = GSYM_UNKNOWN;
+-  s->name = gfc_get_string (name);
++  s->name = gfc_get_string ("%s", name);
+ 
+   gfc_insert_bbt (&gfc_gsym_root, s, gsym_compare);
+ 
+@@ -3517,7 +3517,7 @@ gen_special_c_interop_ptr (int ptr_id, const char *ptr_name,
+     }
+ 
+   /* Module name is some mangled version of iso_c_binding.  */
+-  tmp_sym->module = gfc_get_string (module_name);
++  tmp_sym->module = gfc_get_string ("%s", module_name);
+   
+   /* Say it's from the iso_c_binding module.  */
+   tmp_sym->attr.is_iso_c = 1;
+@@ -3637,7 +3637,7 @@ gen_cptr_param (gfc_formal_arglist **head,
+     }
+ 
+   param_sym->ts.derived = c_ptr_sym;
+-  param_sym->module = gfc_get_string (module_name);
++  param_sym->module = gfc_get_string ("%s", module_name);
+ 
+   /* Make new formal arg.  */
+   formal_arg = gfc_get_formal_arglist ();
+@@ -3682,7 +3682,7 @@ gen_fptr_param (gfc_formal_arglist **head,
+ 
+   /* ISO C Binding type to allow any pointer type as actual param.  */
+   param_sym->ts.type = BT_VOID;
+-  param_sym->module = gfc_get_string (module_name);
++  param_sym->module = gfc_get_string ("%s", module_name);
+    
+   /* Make the arg.  */
+   formal_arg = gfc_get_formal_arglist ();
+@@ -3753,7 +3753,7 @@ gen_shape_param (gfc_formal_arglist **head,
+   param_sym->attr.optional = 1;
+   param_sym->attr.intent = INTENT_IN;
+   param_sym->attr.dimension = 1;
+-  param_sym->module = gfc_get_string (module_name);
++  param_sym->module = gfc_get_string ("%s", module_name);
+    
+   /* Make the arg.  */
+   formal_arg = gfc_get_formal_arglist ();
+@@ -3957,7 +3957,7 @@ generate_isocbinding_symbol (const char *mod_name, iso_c_binding_symbol s,
+ 			"create symbol");
+ 
+   /* Say what module this symbol belongs to.  */
+-  tmp_sym->module = gfc_get_string (mod_name);
++  tmp_sym->module = gfc_get_string ("%s", mod_name);
+   tmp_sym->from_intmod = INTMOD_ISO_C_BINDING;
+   tmp_sym->intmod_sym_id = s;
+ 
+@@ -4234,7 +4234,7 @@ get_iso_c_sym (gfc_symbol *old_sym, char *new_name,
+   strcpy (new_symtree->n.sym->binding_label, new_binding_label);
+   new_symtree->n.sym->attr = old_sym->attr;
+   new_symtree->n.sym->ts = old_sym->ts;
+-  new_symtree->n.sym->module = gfc_get_string (old_sym->module);
++  new_symtree->n.sym->module = gfc_get_string ("%s", old_sym->module);
+   new_symtree->n.sym->from_intmod = old_sym->from_intmod;
+   new_symtree->n.sym->intmod_sym_id = old_sym->intmod_sym_id;
+   /* Build the formal arg list.  */
+diff --git a/gcc/fortran/trans-decl.c b/gcc/fortran/trans-decl.c
+index 18d8d1b..f5589f2 100644
+--- a/gcc/fortran/trans-decl.c
++++ b/gcc/fortran/trans-decl.c
+@@ -3073,7 +3073,7 @@ gfc_find_module (const char *name)
+     {
+       struct module_htab_entry *entry = GGC_CNEW (struct module_htab_entry);
+ 
+-      entry->name = gfc_get_string (name);
++      entry->name = gfc_get_string ("%s", name);
+       entry->decls = htab_create_ggc (10, module_htab_decls_hash,
+ 				      module_htab_decls_eq, NULL);
+       *slot = (void *) entry;
+diff --git a/gcc/gcc.c b/gcc/gcc.c
+index ee95366..a1ae294 100644
+--- a/gcc/gcc.c
++++ b/gcc/gcc.c
+@@ -3007,7 +3007,7 @@ execute (void)
+       if (errmsg != NULL)
+ 	{
+ 	  if (err == 0)
+-	    fatal (errmsg);
++	    fatal ("%s", errmsg);
+ 	  else
+ 	    {
+ 	      errno = err;
+diff --git a/gcc/ira-conflicts.c b/gcc/ira-conflicts.c
+index 05870ab..1608b20 100644
+--- a/gcc/ira-conflicts.c
++++ b/gcc/ira-conflicts.c
+@@ -664,7 +664,7 @@ print_hard_reg_set (FILE *file, const char *title, HARD_REG_SET set)
+ {
+   int i, start;
+ 
+-  fprintf (file, title);
++  fputs (title, file);
+   for (start = -1, i = 0; i < FIRST_PSEUDO_REGISTER; i++)
+     {
+       if (TEST_HARD_REG_BIT (set, i))
+diff --git a/gcc/objc/objc-act.c b/gcc/objc/objc-act.c
+index c23fb9e..1e759fa 100644
+--- a/gcc/objc/objc-act.c
++++ b/gcc/objc/objc-act.c
+@@ -988,7 +988,7 @@ objc_lookup_protocol (tree proto, tree cls, tree typ, bool warn)
+       strcat (errbuf, " the \'");
+       strcat (errbuf, IDENTIFIER_POINTER (PROTOCOL_NAME (proto)));
+       strcat (errbuf, "\' protocol");
+-      warning (0, errbuf);
++      warning (0, "%s", errbuf);
+     }
+ 
+   return false;
+diff --git a/gcc/opts.c b/gcc/opts.c
+index 90f34df..f5bed15 100644
+--- a/gcc/opts.c
++++ b/gcc/opts.c
+@@ -1257,7 +1257,7 @@ print_filtered_help (unsigned int include_flags,
+ 		      if (* (const char **) option->flag_var != NULL)
+ 			snprintf (new_help + strlen (new_help),
+ 				  sizeof (new_help) - strlen (new_help),
+-				  * (const char **) option->flag_var);
++				  "%s", * (const char **) option->flag_var);
+ 		    }
+ 		  else
+ 		    sprintf (new_help + strlen (new_help),
+diff --git a/gcc/toplev.c b/gcc/toplev.c
+index 8417cfe..0af5eb5 100644
+--- a/gcc/toplev.c
++++ b/gcc/toplev.c
+@@ -1182,7 +1182,7 @@ print_to_asm_out_file (print_switch_type type, const char * text)
+     case SWITCH_TYPE_ENABLED:
+       if (prepend_sep)
+ 	fputc (' ', asm_out_file);
+-      fprintf (asm_out_file, text);
++      fprintf (asm_out_file, "%s", text);
+       /* No need to return the length here as
+ 	 print_single_switch has already done it.  */
+       return 0;
+@@ -1211,7 +1211,7 @@ print_to_stderr (print_switch_type type, const char * text)
+       /* Drop through.  */
+ 
+     case SWITCH_TYPE_DESCRIPTIVE:
+-      fprintf (stderr, text);
++      fprintf (stderr, "%s", text);
+       /* No need to return the length here as
+ 	 print_single_switch has already done it.  */
+       return 0;
+@@ -1437,9 +1437,10 @@ static const char *
+ pch_option_mismatch (const char *option)
+ {
+   char *r;
++  int result;
+ 
+-  asprintf (&r, _("created and used with differing settings of '%s'"), option);
+-  if (r == NULL)
++  result = asprintf (&r, _("created and used with differing settings of '%s'"), option);
++  if (result < 0)
+     return _("out of memory");
+   return r;
+ }
+diff --git a/gcc/tree-switch-conversion.c b/gcc/tree-switch-conversion.c
+index dba0c6f..9e910ec 100644
+--- a/gcc/tree-switch-conversion.c
++++ b/gcc/tree-switch-conversion.c
+@@ -858,7 +858,7 @@ do_switchconv (void)
+ 	      {
+ 		gcc_assert (info.reason);
+ 		fprintf (dump_file, "Bailing out - ");
+-		fprintf (dump_file, info.reason);
++		fprintf (dump_file, "%s", info.reason);
+ 		fprintf (dump_file, "--------------------------------\n");
+ 	      }
+ 	  }
+diff --git a/libcpp/macro.c b/libcpp/macro.c
+index a7b7d9e..8570849 100644
+--- a/libcpp/macro.c
++++ b/libcpp/macro.c
+@@ -1727,7 +1727,7 @@ create_iso_definition (cpp_reader *pfile, cpp_macro *macro)
+ 	     function-like macros, but not at the end.  */
+ 	  if (following_paste_op)
+ 	    {
+-	      cpp_error (pfile, CPP_DL_ERROR, paste_op_error_msg);
++	      cpp_error (pfile, CPP_DL_ERROR, "%s", paste_op_error_msg);
+ 	      return false;
+ 	    }
+ 	  break;
+@@ -1740,7 +1740,7 @@ create_iso_definition (cpp_reader *pfile, cpp_macro *macro)
+ 	     function-like macros, but not at the beginning.  */
+ 	  if (macro->count == 1)
+ 	    {
+-	      cpp_error (pfile, CPP_DL_ERROR, paste_op_error_msg);
++	      cpp_error (pfile, CPP_DL_ERROR, "%s", paste_op_error_msg);
+ 	      return false;
+ 	    }
+ 
+diff --git a/libgfortran/runtime/environ.c b/libgfortran/runtime/environ.c
+index a6ce645..48c94ca 100644
+--- a/libgfortran/runtime/environ.c
++++ b/libgfortran/runtime/environ.c
+@@ -71,7 +71,7 @@ print_spaces (int n)
+ 
+   buffer[i] = '\0';
+ 
+-  st_printf (buffer);
++  st_printf ("%s", buffer);
+ }
+ 
+ 
+-- 
+1.6.2.4
+

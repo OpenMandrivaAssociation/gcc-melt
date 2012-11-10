@@ -1,0 +1,48 @@
+From 69be7ffa8f12bfbd207931e97e3c5a475ac78628 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:49 +0000
+Subject: gcc33 pr8213 testcase
+
+2002-11-04  Gwenole Beauchesne  <gbeauchesne@mandrakesoft.com>
+
+	* testsuite/gcc.c-torture/execute/20021104.c: New test.
+---
+ gcc/testsuite/gcc.c-torture/execute/20021104.c |   26 ++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
+ create mode 100644 gcc/testsuite/gcc.c-torture/execute/20021104.c
+
+diff --git a/gcc/testsuite/gcc.c-torture/execute/20021104.c b/gcc/testsuite/gcc.c-torture/execute/20021104.c
+new file mode 100644
+index 0000000..91ccfd6
+--- /dev/null
++++ b/gcc/testsuite/gcc.c-torture/execute/20021104.c
+@@ -0,0 +1,26 @@
++/* PR target/8213
++   This testcase, distilled from GNU gmp 4.1, was miscompiled on x86-64
++   because of RTL sharing problems.  */
++
++int f(long x, long y)
++{
++  if ((x < 0) == (y < 0))
++    {
++      if (x == 0)
++        return -(y != 0);
++      if (y == 0)
++        return x != 0;
++    }
++  else
++    {
++      return x >= 0 ? 1 : -1;
++    }
++}
++
++int main(void)
++{
++  if (f(-1, 1) != -1)
++    abort();
++
++  return 0;
++}
+-- 
+1.6.2.4
+

@@ -1,0 +1,6 @@
+sources:
+  "build_cross_gcc4.sh:"	fe4ea4881cfe5f6a3725bbf4c2cacec8d44ed4f9
+  "gcc35-gnatmake-bash-completion:"	2dd28488fd130f52c2d9513743df89aee85b4496
+  "gcc35-gpc-20040516.tar.bz2:"	5e38947cedcae27b9c5bef4b3e1c118b900b9ae3
+  "gcc35-help2man.pl:"	f2cc9e8fb3d9723ced8931dedb8f8b0ac8b2ee95
+  "lsb-headers-3.1.1.tar.bz2:"	f700920ec91203b516af965c6f9ab0c17f41da18

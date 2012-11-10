@@ -1,0 +1,26 @@
+From aa30b9ee59044febd5f85a33b519a5d44d9b7cf7 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:49 +0000
+Subject: ppc soft float 64bit double libs
+
+---
+ gcc/config/rs6000/t-ppcos |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/config/rs6000/t-ppcos b/gcc/config/rs6000/t-ppcos
+index 819863b..0e24783 100644
+--- a/gcc/config/rs6000/t-ppcos
++++ b/gcc/config/rs6000/t-ppcos
+@@ -1,7 +1,7 @@
+ # Multilibs for a powerpc hosted ELF target (linux, SVR4)
+ 
+-MULTILIB_OPTIONS	= msoft-float
+-MULTILIB_DIRNAMES	= nof
++MULTILIB_OPTIONS	= 
++MULTILIB_DIRNAMES	= 
+ MULTILIB_EXTRA_OPTS	= fPIC mstrict-align
+ MULTILIB_EXCEPTIONS	= 
+ 
+-- 
+1.6.2.4
+

@@ -1,0 +1,81 @@
+--- gcc-3.4.1/gcc/p/config-lang.in.gpc-fixes	2004-05-13 00:48:32.000000000 +0200
++++ gcc-3.4.1/gcc/p/config-lang.in	2004-06-08 23:31:17.287262831 +0200
+@@ -28,7 +28,7 @@ compilers="gpc1\$(exeext)"
+ stagestuff="gpc\$(exeext) gpc-cross\$(exeext) gpc1\$(exeext) gpcpp\$(exeext) libgpc.a"
+ gtfiles="\$(srcdir)/p/gpc.h \$(srcdir)/p/declarations.c \$(srcdir)/p/module.c \$(srcdir)/p/predef.c"
+ 
+-version=`grep version_string "$srcdir/version.c" | sed -e 's/[^"]*"//;s/[ "].*//'`
++version=`grep version_string "$srcdir/gcc/version.c" | sed -e 's/[^"]*"//;s/[ "].*//'`
+ mainversion="$version"
+ gcc3=n
+ if echo $version | grep '2\.9' > /dev/null || echo $version | grep '3\.[1-9]' > /dev/null; then
+@@ -60,24 +60,24 @@ else
+ fi
+ 
+ for x in 2.95.1 2.95.2 2.95.3 2.95.3-5 2.95.3-6 2.95.3-8 2.95.4; do
+-  if [ ! -r "$srcdir/p/diffs/gcc-$x.diff" ]; then
+-    (cd "$srcdir/p/diffs"; ln -s "gcc-2.95.diff" "gcc-$x.diff")
++  if [ ! -r "$srcdir/gcc/p/diffs/gcc-$x.diff" ]; then
++    (cd "$srcdir/gcc/p/diffs"; ln -s "gcc-2.95.diff" "gcc-$x.diff")
+   fi
+ done
+ for x in 3.2.2 3.2.3; do
+-  if [ ! -r "$srcdir/p/diffs/gcc-$x.diff" ]; then
+-    (cd "$srcdir/p/diffs"; ln -s "gcc-3.2.1.diff" "gcc-$x.diff")
++  if [ ! -r "$srcdir/gcc/p/diffs/gcc-$x.diff" ]; then
++    (cd "$srcdir/gcc/p/diffs"; ln -s "gcc-3.2.1.diff" "gcc-$x.diff")
+   fi
+ done
+ for x in 3.3.1; do
+-  if [ ! -r "$srcdir/p/diffs/gcc-$x.diff" ]; then
+-    (cd "$srcdir/p/diffs"; ln -s "gcc-3.3.diff" "gcc-$x.diff")
++  if [ ! -r "$srcdir/gcc/p/diffs/gcc-$x.diff" ]; then
++    (cd "$srcdir/gcc/p/diffs"; ln -s "gcc-3.3.diff" "gcc-$x.diff")
+   fi
+ done
+ 
+-if grep "@@ PATCHED FOR GPC 20040512 @@" "$srcdir/stor-layout.c" > /dev/null; then
++if grep "@@ PATCHED FOR GPC 20040512 @@" "$srcdir/gcc/stor-layout.c" > /dev/null; then
+   :
+-elif grep "@@ PATCHED FOR GPC" "$srcdir/stor-layout.c" > /dev/null; then
++elif grep "@@ PATCHED FOR GPC" "$srcdir/gcc/stor-layout.c" > /dev/null; then
+   echo "" >&2
+   echo "*** There have been changes in the patch for GCC." >&2
+   echo "*** Please start with a fresh copy of the GCC sources and run configure again." >&2
+@@ -85,17 +85,17 @@ elif grep "@@ PATCHED FOR GPC" "$srcdir/
+   exit 1
+ else
+   patchfile="p/diffs/gcc-$mainversion.diff"
+-  if [ ! -r "$srcdir/$patchfile" ]; then
++  if [ ! -r "$srcdir/gcc/$patchfile" ]; then
+     echo "" >&2
+     echo "***" >&2
+     echo "*** Detected GCC version $mainversion." >&2
+     echo "*** This version of GPC requires one of the following versions of the GCC" >&2
+     echo "*** sources to build:" >&2
+     echo "***" >&2
+-    ls "$srcdir"/p/diffs/gcc-*.diff | sed -e 's/^.*\/p\/diffs\/gcc-/***   /' -e 's/\.diff//' >&2
++    ls "$srcdir/gcc"/p/diffs/gcc-*.diff | sed -e 's/^.*\/p\/diffs\/gcc-/***   /' -e 's/\.diff//' >&2
+     echo "***" >&2
+     echo "*** (You can try to patch GCC manually by changing to the directory" >&2
+-    echo "*** `cd "$srcdir"; pwd`," >&2
++    echo "*** `cd "$srcdir/gcc"; pwd`," >&2
+     echo "*** typing a command like \`patch -p1 < p/diffs/gcc-<version>.diff' and patching" >&2
+     echo "*** possible rejects by hand before you run the configure script again.)" >&2
+     echo "***" >&2
+@@ -111,11 +111,11 @@ else
+   echo "*** Press ENTER to continue, Ctrl-C to abort." >&2
+   echo "***" >&2
+   read junk
+-  (cd "$srcdir"; patch -s -p1 < "$patchfile" || exit 1)
++  (cd "$srcdir/gcc"; patch -s -p1 < "$patchfile" || exit 1)
+   # gcc-2's configure expects this. Since it's already running, patching it
+   # will not stop it from requiring it (only for future runs).
+-  if [ $gcc3 = n ] && [ ! -r "$srcdir/p/Makefile.in" ]; then
+-    echo "*** Creating dummy $srcdir/p/Makefile.in"
+-    echo "# empty" > "$srcdir/p/Makefile.in"
++  if [ $gcc3 = n ] && [ ! -r "$srcdir/gcc/p/Makefile.in" ]; then
++    echo "*** Creating dummy $srcdir/gcc/p/Makefile.in"
++    echo "# empty" > "$srcdir/gcc/p/Makefile.in"
+   fi
+ fi

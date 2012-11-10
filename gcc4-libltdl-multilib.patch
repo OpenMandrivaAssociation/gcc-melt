@@ -1,0 +1,207 @@
+From 1413820a6479b7ce0c5d95a328a9ad59c5312ffd Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:48 +0000
+Subject: gcc4 libltdl multilib
+
+2005-06-17  Jakub Jelinek  <jakub@redhat.com>
+
+	* acinclude.m4 (AC_LIBTOOL_SYS_DYNAMIC_LINKER): Set
+	sys_lib_dlsearch_path_spec on bi-arch linux architectures
+	for 64-bit builds.
+	* configure: Rebuilt.
+---
+ libjava/libltdl/acinclude.m4 |   18 ++++++
+ libjava/libltdl/configure    |  127 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 145 insertions(+), 0 deletions(-)
+
+diff --git a/libjava/libltdl/acinclude.m4 b/libjava/libltdl/acinclude.m4
+index 0666824..d7005ed 100644
+--- a/libjava/libltdl/acinclude.m4
++++ b/libjava/libltdl/acinclude.m4
+@@ -1538,6 +1538,24 @@ linux*)
+   # people can always --disable-shared, the test was removed, and we
+   # assume the GNU/Linux dynamic linker is in use.
+   dynamic_linker='GNU/Linux ld.so'
++
++  # Find out which ABI we are using.
++  case "$host_cpu" in
++  x86_64*|s390*|sparc*|ppc*|powerpc*)
++    AC_LANG_PUSH(C)
++    lt_linux_biarch_save_CC="$CC"
++    CC="${LTCC-$CC}"
++    echo 'int i;' > conftest.$ac_ext
++    if AC_TRY_EVAL(ac_compile); then
++      case "`/usr/bin/file conftest.o`" in
++      *64-bit*) sys_lib_dlsearch_path_spec="/lib64 /usr/lib64";;
++      esac
++    fi
++    rm -rf conftest*
++    CC="$lt_linux_biarch_save_CC"
++    AC_LANG_POP
++    ;;
++  esac
+   ;;
+ 
+ knetbsd*-gnu)
+diff --git a/libjava/libltdl/configure b/libjava/libltdl/configure
+index ba1258c..c02798f 100755
+--- a/libjava/libltdl/configure
++++ b/libjava/libltdl/configure
+@@ -8639,6 +8639,38 @@ linux*)
+   # people can always --disable-shared, the test was removed, and we
+   # assume the GNU/Linux dynamic linker is in use.
+   dynamic_linker='GNU/Linux ld.so'
++
++  # Find out which ABI we are using.
++  case "$host_cpu" in
++  x86_64*|s390*|sparc*|ppc*|powerpc*)
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    lt_linux_biarch_save_CC="$CC"
++    CC="${LTCC-$CC}"
++    echo 'int i;' > conftest.$ac_ext
++    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; then
++      case "`/usr/bin/file conftest.o`" in
++      *64-bit*) sys_lib_dlsearch_path_spec="/lib64 /usr/lib64";;
++      esac
++    fi
++    rm -rf conftest*
++    CC="$lt_linux_biarch_save_CC"
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    ;;
++  esac
+   ;;
+ 
+ knetbsd*-gnu)
+@@ -12437,6 +12469,38 @@ linux*)
+   # people can always --disable-shared, the test was removed, and we
+   # assume the GNU/Linux dynamic linker is in use.
+   dynamic_linker='GNU/Linux ld.so'
++
++  # Find out which ABI we are using.
++  case "$host_cpu" in
++  x86_64*|s390*|sparc*|ppc*|powerpc*)
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    lt_linux_biarch_save_CC="$CC"
++    CC="${LTCC-$CC}"
++    echo 'int i;' > conftest.$ac_ext
++    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; then
++      case "`/usr/bin/file conftest.o`" in
++      *64-bit*) sys_lib_dlsearch_path_spec="/lib64 /usr/lib64";;
++      esac
++    fi
++    rm -rf conftest*
++    CC="$lt_linux_biarch_save_CC"
++    ac_ext=cc
++ac_cpp='$CXXCPP $CPPFLAGS'
++ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
++
++    ;;
++  esac
+   ;;
+ 
+ knetbsd*-gnu)
+@@ -15718,6 +15782,37 @@ linux*)
+   # people can always --disable-shared, the test was removed, and we
+   # assume the GNU/Linux dynamic linker is in use.
+   dynamic_linker='GNU/Linux ld.so'
++
++  # Find out which ABI we are using.
++  case "$host_cpu" in
++  x86_64*|s390*|sparc*|ppc*|powerpc*)
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    lt_linux_biarch_save_CC="$CC"
++    CC="${LTCC-$CC}"
++    echo 'int i;' > conftest.$ac_ext
++    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; then
++      case "`/usr/bin/file conftest.o`" in
++      *64-bit*) sys_lib_dlsearch_path_spec="/lib64 /usr/lib64";;
++      esac
++    fi
++    rm -rf conftest*
++    CC="$lt_linux_biarch_save_CC"
++    ac_ext=f
++ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
++ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_f77_compiler_gnu
++
++    ;;
++  esac
+   ;;
+ 
+ knetbsd*-gnu)
+@@ -18204,6 +18299,38 @@ linux*)
+   # people can always --disable-shared, the test was removed, and we
+   # assume the GNU/Linux dynamic linker is in use.
+   dynamic_linker='GNU/Linux ld.so'
++
++  # Find out which ABI we are using.
++  case "$host_cpu" in
++  x86_64*|s390*|sparc*|ppc*|powerpc*)
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    lt_linux_biarch_save_CC="$CC"
++    CC="${LTCC-$CC}"
++    echo 'int i;' > conftest.$ac_ext
++    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
++  (eval $ac_compile) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; then
++      case "`/usr/bin/file conftest.o`" in
++      *64-bit*) sys_lib_dlsearch_path_spec="/lib64 /usr/lib64";;
++      esac
++    fi
++    rm -rf conftest*
++    CC="$lt_linux_biarch_save_CC"
++    ac_ext=c
++ac_cpp='$CPP $CPPFLAGS'
++ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
++ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_compiler_gnu=$ac_cv_c_compiler_gnu
++
++    ;;
++  esac
+   ;;
+ 
+ knetbsd*-gnu)
+-- 
+1.6.2.4
+

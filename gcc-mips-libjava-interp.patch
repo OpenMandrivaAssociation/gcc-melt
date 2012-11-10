@@ -1,0 +1,26 @@
+From 61ddb52990f3d6fe1593946d886c22ff8ebc31af Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Mon, 16 Feb 2009 09:49:58 +0000
+Subject: mips libjava interp
+
+---
+ libjava/configure.host |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/libjava/configure.host b/libjava/configure.host
+index 79ce4d6..ff26a86 100644
+--- a/libjava/configure.host
++++ b/libjava/configure.host
+@@ -101,6 +101,9 @@ case "${host}" in
+   mips*-*)
+ 	libgcj_interpreter=yes
+ 	;;
++  mips*-linux*)
++	libgcj_interpreter=yes
++	;;
+   i686-*|i586-*|i486-*|i386-*)
+ 	sysdeps_dir=i386
+ 	# With -fomit-frame-pointer -maccumulate-outgoing-args (implied),
+-- 
+1.6.2.4
+

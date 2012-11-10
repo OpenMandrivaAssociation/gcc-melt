@@ -1,0 +1,45 @@
+From 9c6cbceb39e6a20397dc536da54bb90b7986ebaf Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Mon, 16 Feb 2009 09:49:58 +0000
+Subject: mips gcc testsuite fix loop
+
+---
+ gcc/testsuite/gcc.c-torture/execute/loop-2f.c |    5 ++++-
+ gcc/testsuite/gcc.c-torture/execute/loop-2g.c |    5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/gcc/testsuite/gcc.c-torture/execute/loop-2f.c b/gcc/testsuite/gcc.c-torture/execute/loop-2f.c
+index 9f544b9..e6c99aa 100644
+--- a/gcc/testsuite/gcc.c-torture/execute/loop-2f.c
++++ b/gcc/testsuite/gcc.c-torture/execute/loop-2f.c
+@@ -20,7 +20,10 @@
+ #endif
+ #endif
+ 
+-#define MAP_START (void *)0x7fff8000
++/* Don't use 0x7fff8000 as addr >= 0x7fff8000 is invalid
++ * on mips32 platform
++ */
++#define MAP_START (void *)0x7fff0000
+ #define MAP_LEN 0x10000
+ 
+ #define OFFSET (MAP_LEN/2 - 2 * sizeof (char));
+diff --git a/gcc/testsuite/gcc.c-torture/execute/loop-2g.c b/gcc/testsuite/gcc.c-torture/execute/loop-2g.c
+index 8792dbf..e9f1644 100644
+--- a/gcc/testsuite/gcc.c-torture/execute/loop-2g.c
++++ b/gcc/testsuite/gcc.c-torture/execute/loop-2g.c
+@@ -20,7 +20,10 @@
+ #endif
+ #endif
+ 
+-#define MAP_START (void *)0x7fff8000
++/* Don't use 0x7fff8000 as addr >= 0x7fff8000 is invalid
++ * on mips32 platform
++ */
++#define MAP_START (void *)0x7fff0000
+ #define MAP_LEN 0x10000
+ 
+ #define OFFSET (MAP_LEN/2 - 2 * sizeof (char));
+-- 
+1.6.2.4
+

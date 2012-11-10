@@ -1,0 +1,37 @@
+From c86b4b4c1ac4316e7abb8d3983b6795237026626 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:49 +0000
+Subject: gcc32 pr7434 testcase
+
+2002-07-29  Gwenole Beauchesne  <gbeauchesne@mandrakesoft.com>
+
+	PR target/7434
+	* testsuite/gcc.dg/20020729-2.c: New test.
+---
+ gcc/testsuite/gcc.dg/20020729-2.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+ create mode 100644 gcc/testsuite/gcc.dg/20020729-2.c
+
+diff --git a/gcc/testsuite/gcc.dg/20020729-2.c b/gcc/testsuite/gcc.dg/20020729-2.c
+new file mode 100644
+index 0000000..33c20e2
+--- /dev/null
++++ b/gcc/testsuite/gcc.dg/20020729-2.c
+@@ -0,0 +1,14 @@
++/* PR target/7434
++   This testcase ICE'd gcc on x86-64, because of confusion of modes in
++   64-bit splitting.  */
++/* { dg-do compile } */
++
++int main (void)
++{
++  static const int align_g[] = { 1, 2, 4, 8, 16 };
++  char * buf;
++  int i = 0;
++  volatile long double val = 0;
++  val = *((long double *)(buf + align_g[i]));
++  return 0;
++}
+-- 
+1.6.2.4
+

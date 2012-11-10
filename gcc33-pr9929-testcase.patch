@@ -1,0 +1,42 @@
+From 9a043d4edc2a8c9c3787be87ca8d4e4d7c29be9f Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:48 +0000
+Subject: gcc33 pr9929 testcase
+
+2003-04-06  Jan Hubicka  <jh@suse.cz>
+
+	PR target/9929
+	* reload.c (find_reloads_toplev):  Remove now redundant alternative
+	(find_reloads_address_1): Synchronize handling of subregs with
+	find_reloads_toplev;  Always reload whole subreg when the inner
+	value requires more registers.
+---
+ gcc/testsuite/gcc.dg/20030721-2.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+ create mode 100644 gcc/testsuite/gcc.dg/20030721-2.c
+
+diff --git a/gcc/testsuite/gcc.dg/20030721-2.c b/gcc/testsuite/gcc.dg/20030721-2.c
+new file mode 100644
+index 0000000..d1f618f
+--- /dev/null
++++ b/gcc/testsuite/gcc.dg/20030721-2.c
+@@ -0,0 +1,16 @@
++/* PR target/9929 */
++/* { dg-do compile } */
++/* { dg-options "-O -fPIC" } */
++
++typedef struct X {
++  char * ptr;
++  int    offset;
++} X_t;
++
++X_t foo(X_t *d1, char * A0);
++
++void bar() {
++  X_t l1, l2, l3;
++  l3 = foo(&l1, l2.ptr);
++  (*(X_t *)(l2.ptr + l3.offset)) = l1;
++}
+-- 
+1.6.2.4
+

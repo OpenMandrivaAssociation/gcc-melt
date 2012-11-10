@@ -1,0 +1,28 @@
+From 48c1855fcec4058fced815b3cd0b5d82614c64ad Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:49 +0000
+Subject: gcc43 no multilib propertydir
+
+---
+ libjava/gnu/classpath/natSystemProperties.cc |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libjava/gnu/classpath/natSystemProperties.cc b/libjava/gnu/classpath/natSystemProperties.cc
+index e259304..be33869 100644
+--- a/libjava/gnu/classpath/natSystemProperties.cc
++++ b/libjava/gnu/classpath/natSystemProperties.cc
+@@ -185,9 +185,9 @@ gnu::classpath::SystemProperties::insertSystemProperties (::java::util::Properti
+   SET ("gnu.classpath.home", PREFIX);
+   // This is set to $(toolexeclibdir) because we use this to find
+   // .security files at runtime.
+-  char val2[sizeof ("file://") + sizeof (TOOLEXECLIBDIR) + 1];
++  char val2[sizeof ("file://") + sizeof (@PROPERTYFILES@) + 1];
+   strcpy (val2, "file://");
+-  strcat (val2, TOOLEXECLIBDIR);
++  strcat (val2, @PROPERTYFILES@);
+   SET ("gnu.classpath.home.url", val2);
+ 
+   SET ("file.encoding", default_file_encoding);
+-- 
+1.6.2.4
+

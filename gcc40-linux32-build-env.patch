@@ -1,0 +1,33 @@
+From 57de990e1ae908b387e375f431126a7861315f54 Mon Sep 17 00:00:00 2001
+From: unknown author <cooker@mandrivalinux.org>
+Date: Tue, 10 Feb 2009 15:47:48 +0000
+Subject: gcc40 linux32 build env
+
+---
+ config-ml.in |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/config-ml.in b/config-ml.in
+index cddf8ef..58c279e 100644
+--- a/config-ml.in
++++ b/config-ml.in
+@@ -858,6 +858,16 @@ if [ -n "${multidirs}" ] && [ -z "${ml_norecursion}" ]; then
+ 	fi
+     fi
+ 
++    if test "x${ml_dir}" = "x32" ; then
++	linux32=`which linux32`
++	if test -n "${linux32}" ; then
++	    ml_config_shell="${linux32} ${ml_config_shell}"
++	    if [ "${ml_verbose}" = --verbose ]; then
++		echo "Running configure in multilib subdir ${ml_dir} with linux32 personality"
++	    fi
++	fi
++    fi
++
+     if eval ${ml_config_env} ${ml_config_shell} ${ml_recprog} \
+ 	--with-multisubdir=${ml_dir} --with-multisrctop=${multisrctop} \
+ 	${ac_configure_args} ${ml_config_env} ${ml_srcdiroption} ; then
+-- 
+1.6.2.4
+
