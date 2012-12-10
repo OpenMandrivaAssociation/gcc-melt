@@ -7,7 +7,7 @@
 %define branch_tag		%(perl -e 'printf "%%02d%%02d", split(/\\./,shift)' %{branch})
 %define version			4.7.0
 %define snapshot		3cefe7f
-%define release			6
+%define release			7
 %define nof_arches		noarch
 %define spu_arches		ppc64
 %define lsb_arches		i386 x86_64 ia64 ppc ppc64 s390 s390x mips mipsel mips64 mips64el
@@ -41,7 +41,11 @@
 %define GCJ_TOOLS		%{cross_prefix}gcj%{package_suffix}-tools
 
 # libgcj-devel should not provide libgcj_bc.so.1
+%if %{_use_internal_dependency_generator}
+%define _noautoprovfiles %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcj_bc.so
+%else
 %define _exclude_files_from_autoprov %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgcj_bc.so
+%endif
 
 #-- JDK version
 %define jdk_version	1.5.0
@@ -108,12 +112,6 @@
 %define _package_suffix		%{package_suffix}
 %endif
 %define gcc42_as_system_compiler 0
-%if %{mdkversion} == 200800
-%define gcc42_as_system_compiler 1
-%endif
-%if %{mdkversion} == 200810
-%define gcc42_as_system_compiler 1
-%endif
 
 %if "%snapshot" != ""
 %define source_package		gcc-%{branch}-%{version}-git%{snapshot}
@@ -210,14 +208,9 @@
 %define build_libstdcxx		0
 %define build_libmudflap	0
 %endif
-%if %{mdkversion} >= 200700
 # use SSP support from glibc 2.4
 %define use_ssp_glibc		1
 %define build_libssp		0
-%else
-%define build_libssp		1
-%define use_ssp_glibc		0
-%endif
 %if !%{system_compiler}
 %define build_objc		0
 %define build_objcp		0
@@ -236,9 +229,7 @@
 %define libc_shared 1
 %if "%{libc}" == "glibc"
 # Default to --hash-style=gnu on MDK >= 2007.1
-%if %{mdkversion} >= 200710
 %define use_hash_style_gnu 1
-%endif
 %endif
 %if !%{build_cross_bootstrap}
 # Make sure pthread.h doesn't contain __thread keyword
@@ -528,8 +519,8 @@ BuildRequires:	dejagnu
 AutoReq:	false
 AutoProv:	false
 %endif
-BuildRequires:	libgmp-devel
-BuildRequires:	libmpfr-devel
+BuildRequires:	gmp-devel
+BuildRequires:	mpfr-devel
 BuildRequires:	libmpc-devel
 %if "%{branch}" == "melt"
 Requires:	gcc-melt-module = %{version}-%{release}
@@ -2464,7 +2455,6 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %if %{build_lto}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/lto-wrapper
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/lto1
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.la
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so.%{liblto_major}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/liblto_plugin.so.%{liblto_major}.0.0
@@ -2910,14 +2900,12 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{_bindir}/%{gcc_target_platform}-gfortran%{program_suffix}
 #
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/f951
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/libgfortranbegin.la
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgfortranbegin.a
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgfortran.a
 %if %{libc_shared}
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/libgfortran.so
 %endif
 %if %isarch %{biarches}
-%{gcc_libdir}/%{gcc_target_platform}/%{version}/32/libgfortranbegin.la
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/32/libgfortranbegin.a
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/32/libgfortran.a
 %if %{libc_shared}
@@ -3306,3 +3294,134 @@ if [ "$1" = "0" ];then /sbin/install-info %{_infodir}/gcc.info.bz2 --dir=%{_info
 %{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-sources/*
 #{gcc_libdir}/%{gcc_target_platform}/%{version}/melt-private-include/*
 %endif
+
+
+%changelog
+* Mon Jul 18 2011 Alexandre Lissy <alissy@mandriva.com> 4.7.0-6
++ Revision: 690394
+- Fixing missing package declaration
+- Come back of the melt-sources package!
+- Updating .spec and sources for latest Git snapshot.
+- Fix source package name and directory
+- Introducing snapshot from gitrpm and changing path to sources.
+- Updating to latest git snapshot after Basile's recent merge.
+- Adding funny gcc stuff. See gitrpm project on http://git.mandriva.com/
+- Disabling libmudflap as per pcpa request
+
+* Fri Jul 01 2011 Alexandre Lissy <alissy@mandriva.com> 4.7.0-5
++ Revision: 688501
+- Release bump
+  Adding gccmelt Provides
+
+* Sun Jun 26 2011 Alexandre Lissy <alissy@mandriva.com> 4.7.0-4
++ Revision: 687307
+- Removing gcc-melt-source package
+- Fix typo in packaging of melt-module
+- Disabling patch #208 the correct way.
+- Disabling patch that won't apply (gcc4.3-pr33763)
+- Update to latest melt branch
+
+* Thu Apr 14 2011 Alexandre Lissy <alissy@mandriva.com> 4.7.0-3
++ Revision: 653046
+- Fix missing 'Summary:' for gcc-melt-plugins package
+- Release bump
+- Adding missing files to gcc-melt-source package
+  Cleaning up files being packages for gcc-melt-source (using wildcard)
+- Preparing venue of gcc-melt-plugin by renaming and splitting current gcc-melt-plugin into gcc-melt-module and gcc-melt-source
+  Changing gcc-plugins name to gcc-melt-plugins
+
+* Sun Apr 10 2011 Alexandre Lissy <alissy@mandriva.com> 4.7.0-1
++ Revision: 652284
+- Rebuild with new ppl/cloog available in Cooker
+  Setting release to 1
+- Release bump to 5
+  Depends on ppl 0.11
+  Depends on cloog 0.16
+  Building gcc with --enable-cloog-backend=ppl thanks to the previous!
+  Enabling bootstrap as it now works thanks to the previous!
+- Bumping to gcc 4.7.0, since trunk is now 4.7.0 for a couple of days/weeks ...
+- Remove --with-pkgversion, it looks like it's just another way of --target=... :/
+- Fix typo on melt_bootstrap variable
+- Factorization of "MELT-specific" configure flags
+- Adding a %%define melt_boostrap to easily test and switch between bootstrap/no bootstrap
+
+* Fri Apr 08 2011 Alexandre Lissy <alissy@mandriva.com> 4.6.0-4.4
++ Revision: 651989
+- Fixing tarball without prefix.
+- Updating to latest melt-branch.
+  Also preparing for re-enabling bootstrap ...
+
+* Mon Mar 28 2011 Alexandre Lissy <alissy@mandriva.com> 4.6.0-4.3
++ Revision: 648657
+- Fixing empty and non-packaged /usr/bin/cpp by removing it
+- Fixing conflicts with system's gcc
+- Updating sources, fixing critical bug that forbids to run melt on real world size programs
+
+* Wed Mar 16 2011 Alexandre Lissy <alissy@mandriva.com> 4.6.0-4.1
++ Revision: 645699
+- Fixing new file being installed but not packaged: xtramelt-ana-base+01.c
+- Fixing patches
+- Updating source tree to latest melt-branch: f3fe262
+
+* Sun Mar 06 2011 Alexandre Lissy <alissy@mandriva.com> 4.6.0-4
++ Revision: 642257
+- Do not build libquadmath when fortran is disabled
+- Removing manbo references
+  Release bump
+- Release bump
+
+  + Paulo Andrade <pcpa@mandriva.com.br>
+    - Only build gfortran library if generating system compiler
+
+* Wed Mar 02 2011 Alexandre Lissy <alissy@mandriva.com> 4.6.0-3.2
++ Revision: 641299
+- Fixing missing description tag
+  Fixing melt package name to gcc-melt-plugin
+- Release bump!
+- Removing melt-private-include/ as suggested by Basile
+- Fixing packaging for i586
+- Release bump
+- Fixing (hopefully) packaging of MELT on i586 hosts.
+- Adding gcc-melt-meltplugin package, finally packaging MELT files!
+- Fixing some missing files while packaging libquadmath (libquadmath.a/.so)
+- Defining new %%{build_lto} to enable/disable lto support
+  Packaging liblto_plugin (major 0)
+  Packaging libquadmath (major 0)
+  Updating fortran packaging
+  Adding new includes for gcc (bmiintrin.h, tbmintrin.h)
+- Fixing missing .info file because of the use of %%{system_compiler}
+- Fixes another bunch of info files (in fact, the missed target of the previous commit ;))
+- Fix %%{_package_suffix} to avoid double dashes
+  Fix info files which used %%{_packages_suffix} while GCC Makefile build them without
+- Fix !system_compiler build: do not attempt to copy omp headers while libgomp isn't built
+- Removing reference to gccbug (removed upstream).
+- Fixing all issues regarding paths for debugedit
+  Updating source tree
+- Fixing gcc_target_platform, to avoid double '-'.
+- Updating sources for latest melt-branch (e1d3ce3).
+  Also removing old garbage source that was left here (88884e3).
+- Update to latest melt-branch
+- Re-defining gcc_target_platform using program_suffix
+- Disabling CXX due to another failure ...
+- Also disable libgcj_bc due to error while building (related to build_java disabled?)
+- Reverting change to the gcc target platform variable
+- Building Java seems not to be working for now, so disabling it.
+- Also using --disable-bootstrap
+- Disabling boostrap which seems to fail for now
+- Not building pdf doc for now: speed up tests ...
+- Reverting to previous merge as current one seems to be failing
+- Reverting to cloog 0.15 since 0.16 is not in Cooker
+- Source update: merge melt-branch with latest master branch.
+- Fixing gcc 4.6.0, cloog-parma and ppl issues
+- Removing CLooG, and forcing BuildRequires for PPL
+- Fixing ppl 0.10 dependency
+- Adding fedora gcc 4.6.0 patch for ppl 0.10
+  Building with CLooG (also brings PPL ...)
+- Fixing make -j issues ...
+- Updating gcc-melt sources
+- Updating gcc-melt for texlive usage
+- Fixing package name issue (gccmelt instead of gcc-melt)
+- Fix .spec for badly commented define
+- Initial commit for gcc-melt package
+- Created package structure for gcc-melt.
+
