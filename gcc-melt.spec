@@ -375,7 +375,7 @@ License:	GPLv3+
 Group:		Development/C
 
 # Main source:	(CVS)
-URL:		http://gcc.gnu.org/
+URL:		https://gcc.gnu.org/
 Source0:	%{source_package}.tar.bz2
 Source1:	lsb-headers-3.1.1.tar.bz2
 Source5:	gcc35-gpc-%{gpc_snapshot}.tar.bz2
