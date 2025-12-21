@@ -453,6 +453,11 @@ Conflicts:	gcc-cpp < 3.2.2-4mdk
 %define binutils_version 2.16.91.0.7-6mdk
 %endif
 Requires:	%{cross_prefix}binutils >= %{binutils_version}
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	%{cross_prefix}binutils >= %{binutils_version}
 # Make sure gdb will understand DW_FORM_strp
 Conflicts:	gdb < 5.1.1
